@@ -1,5 +1,7 @@
 add_executable(mt
-  main.cpp)
+  main.cpp
+  muzaktracker.cpp
+  muzaktracker.h)
 
 target_include_directories(mt PRIVATE ${INTERNAL_INCLUDES})
 
