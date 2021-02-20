@@ -13,6 +13,10 @@ namespace digg
   public:
     explicit Menu(std::string name);
     Menu(std::string name, std::vector<MenuItem> items);
+    Menu(const Menu&);
+    Menu& operator=(const Menu&);
+    Menu(Menu&&) noexcept;
+    Menu& operator=(Menu&&) noexcept;
     ~Menu();
 
     void add_menuitem(MenuItem item);

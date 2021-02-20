@@ -8,15 +8,20 @@ namespace digg
 {
 
   Menu::Menu(std::string name_) :
-    Menu{name_, std::vector<MenuItem>{}}
+    Menu{std::move(name_), std::vector<MenuItem>{}}
   {
   }
 
   Menu::Menu(std::string name_, std::vector<MenuItem> items_) :
-    name{name_},
+    name{std::move(name_)},
     items{std::move(items_)}
   {
   }
+
+  Menu::Menu(const Menu&) = default;
+  Menu& Menu::operator=(const Menu&) = default;
+  Menu::Menu(Menu&&) noexcept = default;
+  Menu& Menu::operator=(Menu&&) noexcept = default;
 
   Menu::~Menu() = default;
 
@@ -31,7 +36,9 @@ namespace digg
     {
       Sentry sentry{[](){ ImGui::EndMenu(); }};
       for (auto& item : items)
+      {
         item.process();
+      }
     }
   }
 

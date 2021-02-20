@@ -18,11 +18,11 @@ namespace digg
   class MainWindow
   {
   public:
-    explicit MainWindow(std::string title);
+    explicit MainWindow(const std::string& title);
     MainWindow(const MainWindow&) = delete;
     MainWindow& operator=(const MainWindow&) = delete;
-    MainWindow(MainWindow&&);
-    MainWindow& operator=(MainWindow&&);
+    MainWindow(MainWindow&&) noexcept;
+    MainWindow& operator=(MainWindow&&) noexcept;
     ~MainWindow();
 
     void add_widget(Widget& w);

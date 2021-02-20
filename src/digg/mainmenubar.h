@@ -14,9 +14,9 @@ namespace digg {
     MainMenuBar();
     MainMenuBar(const MainMenuBar&);
     MainMenuBar& operator=(const MainMenuBar&);
-    MainMenuBar(MainMenuBar&&);
-    MainMenuBar& operator=(MainMenuBar&&);
-    ~MainMenuBar();
+    MainMenuBar(MainMenuBar&&) noexcept;
+    MainMenuBar& operator=(MainMenuBar&&) noexcept;
+    ~MainMenuBar() override;
 
     void process() override;
     void add_menu(const Menu& menu);

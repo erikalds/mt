@@ -21,6 +21,6 @@ namespace digg
 
 }  // namespace digg
 
-inline digg::Renderable::~Renderable() {}
+inline digg::Renderable::~Renderable() = default;
 
 #endif /* RENDERABLE_H */

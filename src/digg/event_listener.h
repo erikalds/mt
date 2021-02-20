@@ -16,6 +16,6 @@ namespace digg
 
 }  // namespace digg
 
-inline digg::EventListener::~EventListener() {}
+inline digg::EventListener::~EventListener() = default;
 
 #endif /* EVENT_LISTENER_H */

@@ -14,6 +14,6 @@ namespace digg
 
 }  // namespace digg
 
-inline digg::Widget::~Widget() {}
+inline digg::Widget::~Widget() = default;
 
 #endif /* WIDGET_H */

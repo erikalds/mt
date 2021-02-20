@@ -9,20 +9,24 @@ namespace digg
   MainMenuBar::MainMenuBar() = default;
   MainMenuBar::MainMenuBar(const MainMenuBar&) = default;
   MainMenuBar& MainMenuBar::operator=(const MainMenuBar&) = default;
-  MainMenuBar::MainMenuBar(MainMenuBar&&) = default;
-  MainMenuBar& MainMenuBar::operator=(MainMenuBar&&) = default;
+  MainMenuBar::MainMenuBar(MainMenuBar&&) noexcept = default;
+  MainMenuBar& MainMenuBar::operator=(MainMenuBar&&) noexcept = default;
   MainMenuBar::~MainMenuBar() = default;
 
   void MainMenuBar::process()
   {
     if (menus.empty())
+    {
       return;
+    }
 
     if (ImGui::BeginMainMenuBar())
     {
       Sentry sentry{[]() { ImGui::EndMainMenuBar(); }};
       for (auto& m : menus)
+      {
         m.process();
+      }
     }
   }
 

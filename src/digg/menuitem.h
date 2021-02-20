@@ -10,12 +10,11 @@ namespace digg
   {
   public:
     explicit MenuItem(Action& action);
-    ~MenuItem();
 
     void process();
 
   private:
-    Action* action;
+    Action* action = nullptr;
   };
 
 }  // namespace digg

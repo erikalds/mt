@@ -13,10 +13,14 @@ namespace digg
   }
 
   MenuBar::MenuBar(std::vector<Menu> menus_) :
-    menus{menus_}
+    menus{std::move(menus_)}
   {
   }
 
+  MenuBar::MenuBar(const MenuBar&) = default;
+  MenuBar& MenuBar::operator=(const MenuBar&) = default;
+  MenuBar::MenuBar(MenuBar&&) noexcept = default;
+  MenuBar& MenuBar::operator=(MenuBar&&) noexcept = default;
   MenuBar::~MenuBar() = default;
 
   void MenuBar::process()
@@ -25,11 +29,13 @@ namespace digg
     {
       Sentry sentry{[]() { ImGui::EndMenuBar(); }};
       for (auto& m : menus)
+      {
         m.process();
+      }
     }
   }
 
-  void MenuBar::add_menu(Menu menu)
+  void MenuBar::add_menu(const Menu& menu)
   {
     menus.push_back(menu);
   }

@@ -2,16 +2,16 @@
 
 namespace digg
 {
-  Action::Action(const std::string& name, std::function<void()> fun_) :
-    Action{name, fun_, std::optional<shortcut>{}}
+  Action::Action(std::string name, std::function<void()> fun_) :
+    Action{std::move(name), std::move(fun_), std::optional<shortcut>{}}
   {
   }
 
-  Action::Action(const std::string& name, std::function<void()> fun_,
+  Action::Action(std::string name, std::function<void()> fun_,
                  std::optional<shortcut> sc) :
-    name_{name},
-    fun{fun_},
-    shortcut_{sc}
+    name_{std::move(name)},
+    fun{std::move(fun_)},
+    shortcut_{std::move(sc)}
   {
   }
 
@@ -23,16 +23,22 @@ namespace digg
   void Action::process_event(const sf::Event& event) const
   {
     if (!shortcut_)
+    {
       return;
+    }
 
     if (shortcut_->triggered(event))
+    {
       act();
+    }
   }
 
   std::optional<std::string_view> Action::shortcut_text() const
   {
     if (!shortcut_)
+    {
       return std::optional<std::string_view>{};
+    }
 
     return shortcut_->text();
   }
@@ -48,15 +54,21 @@ namespace digg
     {
       std::string s;
       if (ctrl)
+      {
         s = "Ctrl";
+      }
       if (alt)
       {
         if (ctrl)
+        {
           s += "+";
+        }
         s += "Alt";
       }
       if (!s.empty())
+      {
         s += "+";
+      }
 
       switch (code)
       {

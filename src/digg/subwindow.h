@@ -14,11 +14,10 @@ namespace digg
   {
   public:
     explicit SubWindow(std::string name_);
-    ~SubWindow();
 
     void set_menubar(MenuBar mb);
 
-    void process();
+    void process() override;
     void toggle_active() { is_open = !is_open; }
 
   private:

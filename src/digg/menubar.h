@@ -12,10 +12,14 @@ namespace digg
   public:
     MenuBar();
     explicit MenuBar(std::vector<Menu> menus);
+    MenuBar(const MenuBar&);
+    MenuBar& operator=(const MenuBar&);
+    MenuBar(MenuBar&&) noexcept;
+    MenuBar& operator=(MenuBar&&) noexcept;
     ~MenuBar();
 
     void process();
-    void add_menu(Menu menu);
+    void add_menu(const Menu& menu);
 
   private:
     std::vector<Menu> menus;

@@ -13,15 +13,15 @@ class Action
 public:
   class shortcut;
 
-  Action(const std::string& name, std::function<void()> fun_);
-  Action(const std::string& name, std::function<void()> fun_,
+  Action(std::string name, std::function<void()> fun_);
+  Action(std::string name, std::function<void()> fun_,
          std::optional<shortcut> sc);
 
   void set_shortcut(sf::Keyboard::Key code, bool control, bool alt);
   void process_event(const sf::Event& event) const;
 
-  std::string_view name() const { return name_; }
-  std::optional<std::string_view> shortcut_text() const;
+  [[nodiscard]] std::string_view name() const { return name_; }
+  [[nodiscard]] std::optional<std::string_view> shortcut_text() const;
 
   void act() const;
 
@@ -30,8 +30,8 @@ public:
   public:
     shortcut(sf::Keyboard::Key code, bool control, bool alt);
 
-    bool triggered(const sf::Event& e) const;
-    std::string_view text() const { return text_; }
+    [[nodiscard]] bool triggered(const sf::Event& e) const;
+    [[nodiscard]] std::string_view text() const { return text_; }
 
   private:
     sf::Keyboard::Key code;

@@ -12,7 +12,7 @@
 namespace digg
 {
 
-  MainWindow::MainWindow(std::string title) :
+  MainWindow::MainWindow(const std::string& title) :
     window{std::make_unique<sf::RenderWindow>(sf::VideoMode{640, 480}, title.c_str())},
     ep{std::make_unique<EventProcessor>()}
   {
@@ -22,9 +22,9 @@ namespace digg
     widgets.push_back(&menubar);
   }
 
-  MainWindow::MainWindow(MainWindow&&) = default;
+  MainWindow::MainWindow(MainWindow&&) noexcept = default;
 
-  MainWindow& MainWindow::operator=(MainWindow&&) = default;
+  MainWindow& MainWindow::operator=(MainWindow&&) noexcept = default;
 
   MainWindow::~MainWindow()
   {
@@ -64,7 +64,7 @@ namespace digg
 
   void MainWindow::process_events()
   {
-    sf::Event event;
+    sf::Event event{};
     while (window->pollEvent(event))
     {
       ImGui::SFML::ProcessEvent(event);
@@ -91,10 +91,14 @@ namespace digg
     ImGui::SFML::Update(*window, delta_time);
 
     for (auto* r : renderables)
+    {
       r->update(delta_time);
+    }
 
     for (auto* w : widgets)
+    {
       w->process();
+    }
   }
 
   void MainWindow::render_window()
@@ -103,7 +107,9 @@ namespace digg
 
     window->setView(world_view_);
     for (auto* r : renderables)
+    {
       r->draw_to(*window);
+    }
 
     window->setView(window->getDefaultView());
     ImGui::SFML::Render(*window);

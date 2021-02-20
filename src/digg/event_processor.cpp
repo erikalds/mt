@@ -18,9 +18,13 @@ namespace digg
   void EventProcessor::process_event(const sf::Event& e) const
   {
     for (const auto* a : actions)
+    {
       a->process_event(e);
+    }
 
     for (auto* listener : listeners)
+    {
       listener->event_occurred(e);
+    }
   }
 }  // namespace digg
