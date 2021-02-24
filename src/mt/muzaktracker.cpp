@@ -42,12 +42,13 @@ void MuzakTracker::create_actions()
                                      main_window->close();
                                    },
                                    Action::shortcut(sf::Keyboard::Q, true, false)});
-
-  auto& ep = main_window->get_eventprocessor();
-  for (auto& a : file_actions)
-  {
-    ep.add_action(a);
-  }
+  view_actions.emplace_back(Action{"Toggle keyboard",
+                                   [this]()
+                                   {
+                                     spdlog::info("Toggle keyboard");
+                                     keyboard->toggle_active();
+                                   },
+                                   Action::shortcut(sf::Keyboard::F10, false, false)});
 }
 
 void MuzakTracker::create_menubar()
@@ -56,13 +57,16 @@ void MuzakTracker::create_menubar()
                          std::vector<digg::Action>& actions)
                   {
                     digg::Menu menu{name.data()};
+                    auto& ep = this->main_window->get_eventprocessor();
                     for (auto& a : actions)
                     {
                       menu.add_menuitem(digg::MenuItem{a});
+                      ep.add_action(a);
                     }
 
                     this->main_window->add_menu(menu);
                   };
 
   add_menu("File", file_actions);
+  add_menu("View", view_actions);
 }

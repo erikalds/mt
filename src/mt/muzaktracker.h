@@ -33,6 +33,7 @@ private:
   std::unique_ptr<Keyboard> keyboard;
   std::unique_ptr<Project> project;
   std::vector<digg::Action> file_actions;
+  std::vector<digg::Action> view_actions;
 };
 
 #endif /* MUZAKTRACKER_H */
