@@ -18,7 +18,9 @@ namespace digg
     void set_menubar(MenuBar mb);
 
     void process() override;
+
     void toggle_active() { is_open = !is_open; }
+    [[nodiscard]] bool is_active() const { return is_open; }
 
   private:
     virtual void draw_widgets() {}

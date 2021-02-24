@@ -1,5 +1,8 @@
 #include "muzaktracker.h"
 
+#include "keyboard.h"
+#include "project.h"
+
 #include "digg/action.h"
 #include "digg/event_processor.h"
 #include "digg/mainwindow.h"
@@ -7,8 +10,16 @@
 #include <spdlog/spdlog.h>
 
 MuzakTracker::MuzakTracker() :
-  main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")}
+  main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")},
+  keyboard{std::make_unique<Keyboard>()},
+  project{std::make_unique<Project>("untitled.mzt")}
 {
+  // TODO: This is only for test
+  keyboard->set_current_instrument(project->get_instrument(0));
+
+  main_window->add_widget(*keyboard);
+  main_window->get_eventprocessor().add_eventlistener(*keyboard);
+
   create_actions();
   create_menubar();
 }

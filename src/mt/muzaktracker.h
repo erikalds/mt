@@ -10,6 +10,9 @@ namespace digg
   class MainWindow;
 }  // namespace digg
 
+class Keyboard;
+class Project;
+
 class MuzakTracker
 {
 public:
@@ -27,6 +30,8 @@ private:
   void create_menubar();
 
   std::unique_ptr<digg::MainWindow> main_window;
+  std::unique_ptr<Keyboard> keyboard;
+  std::unique_ptr<Project> project;
   std::vector<digg::Action> file_actions;
 };
 

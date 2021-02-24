@@ -1,7 +1,15 @@
 add_executable(mt
+  instrument.cpp
+  instrument.h
+  keyboard.cpp
+  keyboard.h
   main.cpp
   muzaktracker.cpp
-  muzaktracker.h)
+  muzaktracker.h
+  note.cpp
+  note.h
+  project.cpp
+  project.h)
 
 target_include_directories(mt PRIVATE ${INTERNAL_INCLUDES})
 
