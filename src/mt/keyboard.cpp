@@ -20,12 +20,9 @@ void Keyboard::event_occurred(const sf::Event& e)
 {
   if (!is_active()
       || !(e.type == sf::Event::KeyPressed
-           || e.type == sf::Event::KeyReleased))
-  {
-    return;
-  }
-
-  if (current_instrument == nullptr)
+           || e.type == sf::Event::KeyReleased)
+      || current_instrument == nullptr
+      || (e.key.alt || e.key.control || e.key.shift || e.key.system))
   {
     return;
   }
