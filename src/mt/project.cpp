@@ -7,6 +7,12 @@ Project::Project(std::string title_) :
 {
   // TODO: Only for test
   instruments.emplace_back(Instrument{"01.wav"});
+  instruments.emplace_back(Instrument{"02.wav"});
+  instruments.emplace_back(Instrument{"c-2.wav"});
+  instruments.emplace_back(Instrument{"c-3.wav"});
+  instruments.emplace_back(Instrument{"c-4.wav"});
+  instruments.emplace_back(Instrument{"c-5.wav"});
+  instruments.emplace_back(Instrument{"c-6.wav"});
 }
 
 Project::~Project() = default;

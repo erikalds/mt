@@ -24,7 +24,7 @@ public:
 
 private:
   sf::SoundBuffer sound_buffer;
-  std::vector<std::unique_ptr<sf::Sound>> sounds;
+  std::vector<sf::Sound*> sounds;
 };
 
 #endif /* INSTRUMENT_H */
