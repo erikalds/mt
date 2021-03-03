@@ -1,5 +1,6 @@
 #include "muzaktracker.h"
 
+#include "instrument_list.h"
 #include "keyboard.h"
 #include "project.h"
 
@@ -12,12 +13,14 @@
 MuzakTracker::MuzakTracker() :
   main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")},
   keyboard{std::make_unique<Keyboard>()},
+  instrument_list{std::make_unique<InstrumentList>()},
   project{std::make_unique<Project>("untitled.mzt")}
 {
-  // TODO: This is only for test
-  keyboard->set_current_instrument(project->get_instrument(0));
+  instrument_list->set_current_project(*project);
+  instrument_list->add_selection_listener(*keyboard);
 
   main_window->add_widget(*keyboard);
+  main_window->add_widget(*instrument_list);
   main_window->get_eventprocessor().add_eventlistener(*keyboard);
 
   create_actions();
@@ -49,6 +52,13 @@ void MuzakTracker::create_actions()
                                      keyboard->toggle_active();
                                    },
                                    Action::shortcut(sf::Keyboard::F10, false, false)});
+  view_actions.emplace_back(Action{"Toggle instrument list",
+                                   [this]()
+                                   {
+                                     spdlog::info("Toggle instrument list");
+                                     instrument_list->toggle_active();
+                                   },
+                                   Action::shortcut(sf::Keyboard::F11, false, false)});
 }
 
 void MuzakTracker::create_menubar()

@@ -13,7 +13,9 @@ public:
   explicit Project(std::string title);
   ~Project();
 
-  Instrument* get_instrument(std::size_t idx);
+  [[nodiscard]] Instrument* get_instrument(std::size_t idx);
+  [[nodiscard]] const Instrument* get_instrument(std::size_t idx) const;
+  [[nodiscard]] std::size_t instrument_count() const;
 
 private:
   std::string title;

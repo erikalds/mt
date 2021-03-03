@@ -78,5 +78,8 @@ void Keyboard::event_occurred(const sf::Event& e)
 
 void Keyboard::set_current_instrument(Instrument* instr)
 {
+  if (current_instrument != nullptr)
+    current_instrument->stop();
+
   current_instrument = instr;
 }

@@ -4,6 +4,7 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <memory>
 #include <string>
+#include <list>
 
 namespace sf { class Sound; }
 
@@ -19,12 +20,16 @@ public:
   Instrument& operator=(Instrument&&) noexcept;
   ~Instrument();
 
+  std::string_view name() const { return instr_name; }
+
   void play(std::size_t octave, Note note);
   void stop(std::size_t octave, Note note);
+  void stop();
 
 private:
   sf::SoundBuffer sound_buffer;
   std::vector<sf::Sound*> sounds;
+  std::string instr_name;
 };
 
 #endif /* INSTRUMENT_H */

@@ -10,6 +10,7 @@ namespace digg
   class MainWindow;
 }  // namespace digg
 
+class InstrumentList;
 class Keyboard;
 class Project;
 
@@ -31,6 +32,7 @@ private:
 
   std::unique_ptr<digg::MainWindow> main_window;
   std::unique_ptr<Keyboard> keyboard;
+  std::unique_ptr<InstrumentList> instrument_list;
   std::unique_ptr<Project> project;
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;

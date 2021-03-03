@@ -1,6 +1,8 @@
 add_executable(mt
   instrument.cpp
   instrument.h
+  instrument_list.cpp
+  instrument_list.h
   keyboard.cpp
   keyboard.h
   main.cpp

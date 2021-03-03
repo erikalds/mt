@@ -15,7 +15,8 @@ namespace {
 
 Instrument::Instrument(const std::string& filename) :
   sound_buffer{},
-  sounds{octaves * notes, nullptr}
+  sounds{octaves * notes, nullptr},
+  instr_name{filename}
 {
   if (!sound_buffer.loadFromFile(filename))
   {
@@ -88,5 +89,14 @@ void Instrument::stop(std::size_t octave, Note note)
   {
     spdlog::debug("Stop instrument {}-{} [{}]", note, octave, idx);
     sound->stop();
+  }
+}
+
+void Instrument::stop()
+{
+  for (auto*& s : sounds)
+  {
+    std::unique_ptr<sf::Sound> sound{s};
+    s = nullptr;
   }
 }

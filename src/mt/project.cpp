@@ -26,3 +26,18 @@ Instrument* Project::get_instrument(std::size_t idx)
 
   return nullptr;
 }
+
+const Instrument* Project::get_instrument(std::size_t idx) const
+{
+  if (idx < instruments.size())
+  {
+    return &instruments[idx];
+  }
+
+  return nullptr;
+}
+
+std::size_t Project::instrument_count() const
+{
+  return instruments.size();
+}
