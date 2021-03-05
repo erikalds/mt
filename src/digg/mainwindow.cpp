@@ -36,6 +36,17 @@ namespace digg
     widgets.push_back(&w);
   }
 
+  void MainWindow::remove_widget(Widget& w)
+  {
+    auto iter = std::find(std::begin(widgets), std::end(widgets), &w);
+    if (iter == std::end(widgets))
+    {
+      return;
+    }
+
+    widgets.erase(iter);
+  }
+
   void MainWindow::add_renderable(Renderable& r)
   {
     renderables.push_back(&r);

@@ -26,6 +26,7 @@ namespace digg
     ~MainWindow();
 
     void add_widget(Widget& w);
+    void remove_widget(Widget& w);
     void add_renderable(Renderable& r);
 
     void add_menu(const Menu& m);
