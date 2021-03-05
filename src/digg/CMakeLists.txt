@@ -4,6 +4,8 @@ add_library(digg STATIC
   event_processor.cpp
   event_processor.h
   event_listener.h
+  file_dialog.cpp
+  file_dialog.h
   mainmenubar.cpp
   mainmenubar.h
   mainwindow.cpp
