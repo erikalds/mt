@@ -13,7 +13,7 @@ Project::Project() :
 
 Project::~Project() = default;
 
-void Project::load_from_file(const std::string& filename)
+void Project::load_from_file(const std::filesystem::path& filename)
 {
   auto rootnode = YAML::LoadFile(filename);
   project_filename = filename;

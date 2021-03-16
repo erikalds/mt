@@ -1,8 +1,9 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include <vector>
+#include <filesystem>
 #include <string>
+#include <vector>
 
 class Instrument;
 
@@ -13,7 +14,7 @@ public:
   Project();
   ~Project();
 
-  void load_from_file(const std::string& filename);
+  void load_from_file(const std::filesystem::path& filename);
 
   [[nodiscard]] Instrument* get_instrument(std::size_t idx);
   [[nodiscard]] const Instrument* get_instrument(std::size_t idx) const;

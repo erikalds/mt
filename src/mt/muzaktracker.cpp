@@ -49,7 +49,7 @@ void MuzakTracker::create_actions()
                                            this->main_window->remove_widget(*this->file_dialog);
                                          };
                                      auto open
-                                       = [this, close_dialog](const std::string& filename)
+                                       = [this, close_dialog](const std::filesystem::path& filename)
                                          {
                                            close_dialog();
                                            this->open_project(filename);
@@ -105,9 +105,9 @@ void MuzakTracker::create_menubar()
   add_menu("View", view_actions);
 }
 
-void MuzakTracker::open_project(const std::string& filename)
+void MuzakTracker::open_project(const std::filesystem::path& filename)
 {
-  spdlog::info("Open project: {}", filename);
+  spdlog::info("Open project: {}", filename.string());
   auto new_proj = std::make_unique<Project>();
   instrument_list->set_current_project(*new_proj);
   new_proj->load_from_file(filename);

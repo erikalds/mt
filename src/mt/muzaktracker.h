@@ -1,6 +1,7 @@
 #ifndef MUZAKTRACKER_H
 #define MUZAKTRACKER_H
 
+#include <filesystem>
 #include <memory>
 #include <vector>
 
@@ -31,7 +32,7 @@ private:
   void create_actions();
   void create_menubar();
 
-  void open_project(const std::string& filename);
+  void open_project(const std::filesystem::path& filename);
   void set_current_project(std::unique_ptr<Project> p);
 
   std::unique_ptr<digg::MainWindow> main_window;

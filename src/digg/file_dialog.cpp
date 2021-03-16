@@ -38,7 +38,7 @@ namespace digg {
 
   FileDialog::FileDialog(std::string title,
                          std::string filter_,
-                         std::function<void(const std::string&)> ok_fun_,
+                         std::function<void(const std::filesystem::path&)> ok_fun_,
                          std::function<void()> cancel_fun_) :
     SubWindow{std::move(title)},
     filter{std::move(filter_)},
@@ -102,7 +102,7 @@ namespace digg {
 
     if (ImGui::Button("OK"))
     {
-      ok_fun((current_directory / current_selected).string());
+      ok_fun(current_directory / current_selected);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel"))

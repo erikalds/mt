@@ -15,7 +15,7 @@ class FileDialog : public SubWindow
 public:
   FileDialog(std::string title,
              std::string filter,
-             std::function<void(const std::string&)> ok_fun,
+             std::function<void(const std::filesystem::path&)> ok_fun,
              std::function<void()> cancel_fun);
 
   void draw_widgets() override;
@@ -31,7 +31,7 @@ private:
   std::regex filter_re;
   int selected_filter;
 
-  std::function<void(const std::string&)> ok_fun;
+  std::function<void(const std::filesystem::path&)> ok_fun;
   std::function<void()> cancel_fun;
 
   int current_item;
