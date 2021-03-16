@@ -18,7 +18,7 @@ namespace digg
   class MainWindow
   {
   public:
-    explicit MainWindow(const std::string& title);
+    explicit MainWindow(std::string title_);
     MainWindow(const MainWindow&) = delete;
     MainWindow& operator=(const MainWindow&) = delete;
     MainWindow(MainWindow&&) noexcept;
@@ -37,6 +37,7 @@ namespace digg
     void close();
 
     sf::View& world_view() { return world_view_; }
+    void set_subtitle(std::string_view st);
 
   private:
     void process_events();
@@ -49,6 +50,8 @@ namespace digg
     std::vector<Widget*> widgets;
     std::vector<Renderable*> renderables;
     sf::View world_view_;
+    std::string title;
+    std::string subtitle;
   };
 
 }  // namespace digg

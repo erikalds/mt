@@ -12,9 +12,11 @@
 namespace digg
 {
 
-  MainWindow::MainWindow(const std::string& title) :
-    window{std::make_unique<sf::RenderWindow>(sf::VideoMode{640, 480}, title.c_str())},
-    ep{std::make_unique<EventProcessor>()}
+  MainWindow::MainWindow(std::string title_) :
+    window{std::make_unique<sf::RenderWindow>(sf::VideoMode{640, 480}, title_.c_str())},
+    ep{std::make_unique<EventProcessor>()},
+    title{std::move(title_)},
+    subtitle{}
   {
     window->setFramerateLimit(60);
     ImGui::SFML::Init(*window);
@@ -71,6 +73,19 @@ namespace digg
   void MainWindow::close()
   {
     window->close();
+  }
+
+  void MainWindow::set_subtitle(std::string_view st)
+  {
+    subtitle = st;
+    if (!st.empty())
+    {
+      window->setTitle(title + " - " + subtitle);
+    }
+    else
+    {
+      window->setTitle(title);
+    }
   }
 
   void MainWindow::process_events()
