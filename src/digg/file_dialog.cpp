@@ -30,6 +30,7 @@ namespace digg {
         }
       }
       s.push_back('$');
+      spdlog::debug(R"(filter "{}" gives regex "{}")", filter, s);
       return std::regex{s};
     }
 
@@ -41,7 +42,7 @@ namespace digg {
                          std::function<void()> cancel_fun_) :
     SubWindow{std::move(title)},
     filter{std::move(filter_)},
-    filter_re{to_regex(filter_)},
+    filter_re{to_regex(filter)},
     selected_filter{0},
     ok_fun{std::move(ok_fun_)},
     cancel_fun{std::move(cancel_fun_)},
