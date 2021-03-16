@@ -13,7 +13,7 @@ enum class Note;
 class Instrument
 {
 public:
-  explicit Instrument(const std::string& filename);
+  explicit Instrument(std::string name_);
   Instrument(const Instrument&) = delete;
   Instrument& operator=(const Instrument&) = delete;
   Instrument(Instrument&&) noexcept;
@@ -21,6 +21,7 @@ public:
   ~Instrument();
 
   std::string_view name() const { return instr_name; }
+  void load_pcm_data(const void* pcm_data, std::size_t size);
 
   void play(std::size_t octave, Note note);
   void stop(std::size_t octave, Note note);

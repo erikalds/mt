@@ -13,19 +13,11 @@ namespace {
 
 } // anonymous namespace
 
-Instrument::Instrument(const std::string& filename) :
+Instrument::Instrument(std::string name) :
   sound_buffer{},
   sounds{octaves * notes, nullptr},
-  instr_name{filename}
+  instr_name{std::move(name)}
 {
-  if (!sound_buffer.loadFromFile(filename))
-  {
-    spdlog::error("Failed to load file: {}", filename);
-  }
-  else
-  {
-    spdlog::debug("Successfully loaded file: {}", filename);
-  }
 }
 
 Instrument::Instrument(Instrument&&) noexcept = default;
@@ -36,6 +28,18 @@ Instrument::~Instrument()
   for (auto* s : sounds)
   {
     std::unique_ptr<sf::Sound>{s};
+  }
+}
+
+void Instrument::load_pcm_data(const void* pcm_data, std::size_t size)
+{
+  if (!sound_buffer.loadFromMemory(pcm_data, size))
+  {
+    spdlog::error("Failed to load PCM data for instrument: {}", name());
+  }
+  else
+  {
+    spdlog::debug("Successfully loaded PCM data for instrument: {}", name());
   }
 }
 

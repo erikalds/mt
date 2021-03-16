@@ -60,7 +60,10 @@ endif()
 set(CONAN_EXTRA_REQUIRES "")
 set(CONAN_EXTRA_OPTIONS "")
 
-set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES} imgui-sfml/2.1@bincrafters/stable)
+set(CONAN_EXTRA_REQUIRES
+  ${CONAN_EXTRA_REQUIRES}
+  imgui-sfml/2.1@bincrafters/stable
+  yaml-cpp/0.6.2@bincrafters/stable)
 
 set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
   sfml:shared=False sfml:graphics=True sfml:audio=True sfml:window=True libalsa:disable_python=True)

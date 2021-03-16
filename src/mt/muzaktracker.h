@@ -7,6 +7,7 @@
 namespace digg
 {
   class Action;
+  class FileDialog;
   class MainWindow;
 }  // namespace digg
 
@@ -30,12 +31,16 @@ private:
   void create_actions();
   void create_menubar();
 
+  void open_project(const std::string& filename);
+  void set_current_project(std::unique_ptr<Project> p);
+
   std::unique_ptr<digg::MainWindow> main_window;
   std::unique_ptr<Keyboard> keyboard;
   std::unique_ptr<InstrumentList> instrument_list;
   std::unique_ptr<Project> project;
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;
+  std::unique_ptr<digg::FileDialog> file_dialog;
 };
 
 #endif /* MUZAKTRACKER_H */

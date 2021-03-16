@@ -6,17 +6,18 @@
 
 #include "digg/action.h"
 #include "digg/event_processor.h"
+#include "digg/file_dialog.h"
 #include "digg/mainwindow.h"
 #include "digg/menu.h"
+#include <SFML/Window/Keyboard.hpp>
 #include <spdlog/spdlog.h>
 
 MuzakTracker::MuzakTracker() :
   main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")},
   keyboard{std::make_unique<Keyboard>()},
-  instrument_list{std::make_unique<InstrumentList>()},
-  project{std::make_unique<Project>("untitled.mzt")}
+  instrument_list{std::make_unique<InstrumentList>()}
 {
-  instrument_list->set_current_project(*project);
+  set_current_project(std::make_unique<Project>());
   instrument_list->add_selection_listener(*keyboard);
 
   main_window->add_widget(*keyboard);
@@ -38,6 +39,29 @@ int MuzakTracker::run()
 void MuzakTracker::create_actions()
 {
   using digg::Action;
+  file_actions.emplace_back(Action{"Open",
+                                   [this]()
+                                   {
+                                     spdlog::info("Open");
+                                     auto close_dialog
+                                       = [this]()
+                                         {
+                                           this->main_window->remove_widget(*this->file_dialog);
+                                         };
+                                     auto open
+                                       = [this, close_dialog](const std::string& filename)
+                                         {
+                                           close_dialog();
+                                           this->open_project(filename);
+                                         };
+                                     this->file_dialog
+                                       = std::make_unique<digg::FileDialog>("Open project",
+                                                                            "*.mzt",
+                                                                            open,
+                                                                            close_dialog);
+                                     this->main_window->add_widget(*this->file_dialog);
+                                   },
+                                   Action::shortcut(sf::Keyboard::O, true, false)});
   file_actions.emplace_back(Action{"Quit",
                                    [this]()
                                    {
@@ -79,4 +103,21 @@ void MuzakTracker::create_menubar()
 
   add_menu("File", file_actions);
   add_menu("View", view_actions);
+}
+
+void MuzakTracker::open_project(const std::string& filename)
+{
+  spdlog::info("Open project: {}", filename);
+  auto new_proj = std::make_unique<Project>();
+  instrument_list->set_current_project(*new_proj);
+  new_proj->load_from_file(filename);
+  set_current_project(std::move(new_proj));
+}
+
+void MuzakTracker::set_current_project(std::unique_ptr<Project> p)
+{
+  project = std::move(p);
+
+  instrument_list->set_current_project(*project);
+  main_window->set_subtitle(project->get_title());
 }
