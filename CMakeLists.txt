@@ -74,7 +74,7 @@ add_subdirectory(src)
 
 if(ENABLE_TESTING)
   enable_testing()
-  message("Building Tests. Be sure to check out test/constexpr_tests for constexpr testing")
+  message("Building Tests.")
   add_subdirectory(test)
 endif()
 
