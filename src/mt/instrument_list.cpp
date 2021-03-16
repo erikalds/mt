@@ -31,10 +31,19 @@ void InstrumentList::draw_widgets()
     items.push_back(project->get_instrument(i)->name().data());
   }
 
-  if (ImGui::ListBox("", &this->current_item, &items[0],
-                     static_cast<int>(items.size())))
+  const int height_in_items{6};
+  if (items.empty())
   {
-    notify_listeners();
+    const char* empty{"<empty>"};
+    ImGui::ListBox("", &this->current_item, &empty, 1, height_in_items);
+  }
+  else
+  {
+    if (ImGui::ListBox("", &this->current_item, &items[0],
+                       static_cast<int>(items.size()), height_in_items))
+    {
+      notify_listeners();
+    }
   }
 }
 
