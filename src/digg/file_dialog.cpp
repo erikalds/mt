@@ -93,7 +93,6 @@ namespace digg {
       set_current_selected(&curr_selected_buf[0]);
     }
 
-    ImGui::SameLine();
     std::vector<const char*> filters{filter.c_str(), "*.*"};
     if (ImGui::Combo("Filter", &selected_filter, &filters[0], static_cast<int>(filters.size())))
     {
