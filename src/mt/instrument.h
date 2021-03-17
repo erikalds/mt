@@ -1,14 +1,14 @@
 #ifndef INSTRUMENT_H
 #define INSTRUMENT_H
 
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <memory>
 #include <string>
-#include <list>
+#include <vector>
 
 namespace sf { class Sound; }
 
 enum class Note;
+class Sample;
 
 class Instrument
 {
@@ -20,15 +20,17 @@ public:
   Instrument& operator=(Instrument&&) noexcept;
   ~Instrument();
 
-  std::string_view name() const { return instr_name; }
-  void load_pcm_data(const void* pcm_data, std::size_t size);
+  [[nodiscard]] std::string_view name() const { return instr_name; }
+  void add_sample(Sample&& sample);
 
   void play(std::size_t octave, Note note);
   void stop(std::size_t octave, Note note);
   void stop();
 
 private:
-  sf::SoundBuffer sound_buffer;
+  [[nodiscard]] const Sample* lookup_sample(std::size_t octave, Note note) const;
+
+  std::vector<Sample> samples;
   std::vector<sf::Sound*> sounds;
   std::string instr_name;
 };

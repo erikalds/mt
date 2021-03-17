@@ -11,7 +11,9 @@ add_executable(mt
   note.cpp
   note.h
   project.cpp
-  project.h)
+  project.h
+  sample.cpp
+  sample.h)
 
 target_include_directories(mt PRIVATE ${INTERNAL_INCLUDES})
 

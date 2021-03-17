@@ -1,7 +1,8 @@
 #include "project.h"
 
-#include "base64/decode.h"
 #include "instrument.h"
+#include "sample.h"
+#include "base64/decode.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
@@ -22,28 +23,20 @@ void Project::load_from_file(const std::filesystem::path& filename)
     title = rootnode["project"]["title"].as<std::string>();
   }
 
-  if (rootnode["project"]["instruments"].IsDefined())
+  for (const auto& node : rootnode["project"]["instruments"])
   {
-    spdlog::debug("instruments is defined in project rootnode");
-    if (rootnode["project"]["instruments"].IsSequence())
+    spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
+    instruments.emplace_back(Instrument{node["name"].as<std::string>()});
+    for (const auto& sample_node : node["samples"])
     {
-      for (const auto& node : rootnode["project"]["instruments"])
-      {
-        spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
-        spdlog::debug("First pcm-data: {}", node["pcm-data"].as<std::string>().substr(0, 100));
-        instruments.emplace_back(Instrument{node["name"].as<std::string>()});
-        auto b64data = node["pcm-data"].as<std::string>();
-        std::vector<unsigned char> pcm_data;
-        pcm_data.resize(b64::data_size(b64data.c_str()), 0);
-        b64::decode(b64data.c_str(),
-                    &pcm_data[0], pcm_data.size());
-        instruments.back().load_pcm_data(&pcm_data[0], pcm_data.size());
-      }
+      auto b64data = sample_node["pcm-data"].as<std::string>();
+      std::vector<unsigned char> pcm_data;
+      pcm_data.resize(b64::data_size(b64data.c_str()), 0);
+      b64::decode(b64data.c_str(),
+                  &pcm_data[0], pcm_data.size());
+      instruments.back().add_sample(Sample{sample_node["name"].as<std::string>(),
+                                           &pcm_data[0], pcm_data.size()});
     }
-  }
-  else
-  {
-    spdlog::debug("projects->instruments is not defined");
   }
 }
 

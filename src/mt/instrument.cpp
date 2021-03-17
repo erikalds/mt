@@ -1,6 +1,7 @@
 #include "instrument.h"
 
 #include "note.h"
+#include "sample.h"
 #include <SFML/Audio/Sound.hpp>
 #include <spdlog/spdlog.h>
 #include <cassert>
@@ -14,7 +15,6 @@ namespace {
 } // anonymous namespace
 
 Instrument::Instrument(std::string name) :
-  sound_buffer{},
   sounds{octaves * notes, nullptr},
   instr_name{std::move(name)}
 {
@@ -31,16 +31,9 @@ Instrument::~Instrument()
   }
 }
 
-void Instrument::load_pcm_data(const void* pcm_data, std::size_t size)
+void Instrument::add_sample(Sample&& sample)
 {
-  if (!sound_buffer.loadFromMemory(pcm_data, size))
-  {
-    spdlog::error("Failed to load PCM data for instrument: {}", name());
-  }
-  else
-  {
-    spdlog::debug("Successfully loaded PCM data for instrument: {}", name());
-  }
+  samples.emplace_back(sample);
 }
 
 void Instrument::play(std::size_t octave, Note note)
@@ -51,8 +44,7 @@ void Instrument::play(std::size_t octave, Note note)
   if (sound == nullptr)
   {
     spdlog::debug("[{}] Create sound {}-{} [{}]", name(), note, octave, idx);
-    auto s = std::make_unique<sf::Sound>();
-    s->setBuffer(sound_buffer);
+    auto s = lookup_sample(octave, note)->create_sound();
     s->setPitch(1.0);
     s->setLoop(true);
     if (octave >= 3)
@@ -71,7 +63,7 @@ void Instrument::play(std::size_t octave, Note note)
     if (sound->getBuffer() == nullptr)
     {
       spdlog::debug("[{}] Instrument has no sound_buffer", name());
-      sound->setBuffer(sound_buffer);
+      //sound->setBuffer(sound_buffer);
     }
     spdlog::debug("[{}] Play {}-{} [{}]", name(), note, octave, idx);
     sound->play();
@@ -103,4 +95,9 @@ void Instrument::stop()
     std::unique_ptr<sf::Sound> sound{s};
     s = nullptr;
   }
+}
+
+const Sample* Instrument::lookup_sample(std::size_t /*octave*/, Note /*note*/) const
+{
+  return &samples[0];
 }
