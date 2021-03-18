@@ -15,7 +15,9 @@ public:
          float pitch_offset_);
 
   std::unique_ptr<sf::Sound> create_sound() const;
+
   std::string_view name() const { return sample_name; }
+  void set_name(std::string_view n) { sample_name = n; }
 
   float get_pitch_offset() const { return pitch_offset; }
 

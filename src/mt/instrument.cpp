@@ -36,6 +36,31 @@ void Instrument::add_sample(Sample&& sample)
   samples.emplace_back(sample);
 }
 
+std::size_t Instrument::sample_count() const
+{
+  return samples.size();
+}
+
+const Sample* Instrument::sample(std::size_t idx) const
+{
+  if (idx < samples.size())
+  {
+    return &samples[idx];
+  }
+
+  return nullptr;
+}
+
+Sample* Instrument::sample(std::size_t idx)
+{
+  if (idx < samples.size())
+  {
+    return &samples[idx];
+  }
+
+  return nullptr;
+}
+
 void Instrument::set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass)
 {
   sample_lut = std::move(ass);

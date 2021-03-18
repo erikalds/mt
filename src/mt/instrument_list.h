@@ -23,6 +23,7 @@ private:
 
   Project* project = nullptr;
   int current_item = 0;
+  int current_sample = 0;
 
   std::set<InstrumentSelectionListener*> listeners;
 };

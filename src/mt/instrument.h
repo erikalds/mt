@@ -21,8 +21,12 @@ public:
   ~Instrument();
 
   [[nodiscard]] std::string_view name() const { return instr_name; }
+  void set_name(std::string_view n) { instr_name = n; }
 
   void add_sample(Sample&& sample);
+  [[nodiscard]] std::size_t sample_count() const;
+  [[nodiscard]] const Sample* sample(std::size_t idx) const;
+  [[nodiscard]] Sample* sample(std::size_t idx);
 
   using NoteDef = std::pair<std::size_t, Note>;
   void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);

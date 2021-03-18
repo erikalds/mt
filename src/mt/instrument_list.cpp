@@ -3,6 +3,7 @@
 #include "instrument.h"
 #include "instrument_selection_listener.h"
 #include "project.h"
+#include "sample.h"
 
 #include <imgui.h>
 
@@ -35,12 +36,25 @@ void InstrumentList::draw_widgets()
   if (items.empty())
   {
     const char* empty{"<empty>"};
-    ImGui::ListBox("", &this->current_item, &empty, 1, height_in_items);
+    ImGui::ListBox("Instruments", &this->current_item, &empty, 1, height_in_items);
+    ImGui::ListBox("Samples", &this->current_sample, &empty, 1, height_in_items);
   }
   else
   {
-    if (ImGui::ListBox("", &this->current_item, &items[0],
+    if (ImGui::ListBox("Instruments", &this->current_item, &items[0],
                        static_cast<int>(items.size()), height_in_items))
+    {
+      notify_listeners();
+    }
+    const auto* instr = project->get_instrument(static_cast<std::size_t>(this->current_item));
+    std::vector<const char*> sample_items;
+    sample_items.reserve(instr->sample_count());
+    for (auto i = 0U; i < instr->sample_count(); ++i)
+    {
+      sample_items.push_back(instr->sample(i)->name().data());
+    }
+    if (ImGui::ListBox("Samples", &this->current_sample, &sample_items[0],
+                       static_cast<int>(sample_items.size()), height_in_items))
     {
       notify_listeners();
     }
@@ -51,7 +65,12 @@ void InstrumentList::add_selection_listener(InstrumentSelectionListener& listene
 {
   listeners.insert(&listener);
   auto* instr = project->get_instrument(static_cast<std::size_t>(current_item));
-  listener.selected_instrument_changed(instr);
+  Sample* sample = nullptr;
+  if (instr != nullptr)
+  {
+    sample = instr->sample(static_cast<std::size_t>(current_sample));
+  }
+  listener.selected_instrument_changed(instr, sample);
 }
 
 void InstrumentList::remove_selection_listener(InstrumentSelectionListener& listener)
@@ -62,8 +81,13 @@ void InstrumentList::remove_selection_listener(InstrumentSelectionListener& list
 void InstrumentList::notify_listeners() const
 {
   auto* instr = project->get_instrument(static_cast<std::size_t>(current_item));
+  Sample* sample = nullptr;
+  if (instr != nullptr)
+  {
+    sample = instr->sample(static_cast<std::size_t>(current_sample));
+  }
   for (auto* l : listeners)
   {
-    l->selected_instrument_changed(instr);
+    l->selected_instrument_changed(instr, sample);
   }
 }

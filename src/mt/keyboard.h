@@ -18,7 +18,7 @@ public:
   void event_occurred(const sf::Event& e) override;
 
   void set_current_instrument(Instrument* instr);
-  void selected_instrument_changed(Instrument* instr) override
+  void selected_instrument_changed(Instrument* instr, Sample*) override
   { set_current_instrument(instr); }
 
 private:
