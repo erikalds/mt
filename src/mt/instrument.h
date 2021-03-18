@@ -21,7 +21,11 @@ public:
   ~Instrument();
 
   [[nodiscard]] std::string_view name() const { return instr_name; }
+
   void add_sample(Sample&& sample);
+
+  using NoteDef = std::pair<std::size_t, Note>;
+  void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);
 
   void play(std::size_t octave, Note note);
   void stop(std::size_t octave, Note note);
@@ -33,6 +37,7 @@ private:
   std::vector<Sample> samples;
   std::vector<sf::Sound*> sounds;
   std::string instr_name;
+  std::vector<std::pair<NoteDef, NoteDef>> sample_lut;
 };
 
 #endif /* INSTRUMENT_H */

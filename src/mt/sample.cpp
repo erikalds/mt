@@ -3,8 +3,10 @@
 #include <spdlog/spdlog.h>
 #include <SFML/Audio/Sound.hpp>
 
-Sample::Sample(std::string name_, void* pcm_data, std::size_t data_size) :
-  sample_name{std::move(name_)}
+Sample::Sample(std::string name_, void* pcm_data, std::size_t data_size,
+               float pitch_offset_) :
+  sample_name{std::move(name_)},
+  pitch_offset{pitch_offset_}
 {
   if (!sound_buffer.loadFromMemory(pcm_data, data_size))
   {

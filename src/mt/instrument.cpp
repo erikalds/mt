@@ -36,6 +36,23 @@ void Instrument::add_sample(Sample&& sample)
   samples.emplace_back(sample);
 }
 
+void Instrument::set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass)
+{
+  sample_lut = std::move(ass);
+  if (sample_lut.empty())
+  {
+    sample_lut.emplace_back(std::make_pair(NoteDef{0, Note::C},
+                                           NoteDef{7, Note::B}));
+  }
+  spdlog::debug("Samples: {}", samples.size());
+  for (auto i = 0U; i < sample_lut.size(); ++i)
+  {
+    spdlog::debug(" - {}: [{}-{}] - [{}-{}]", i,
+                  sample_lut[i].first.second, sample_lut[i].first.first,
+                  sample_lut[i].second.second, sample_lut[i].second.first);
+  }
+}
+
 void Instrument::play(std::size_t octave, Note note)
 {
   const std::size_t idx = octave * notes + static_cast<std::size_t>(note);
@@ -43,15 +60,22 @@ void Instrument::play(std::size_t octave, Note note)
   auto* sound = sounds[idx];
   if (sound == nullptr)
   {
+    const auto* sample = lookup_sample(octave, note);
+    if (sample == nullptr)
+    {
+      spdlog::debug("[{}] No sample found for {}-{} [{}]", name(), note, octave, idx);
+      return;
+    }
     spdlog::debug("[{}] Create sound {}-{} [{}]", name(), note, octave, idx);
-    auto s = lookup_sample(octave, note)->create_sound();
-    s->setPitch(1.0);
+    auto s = sample->create_sound();
     s->setLoop(true);
     if (octave >= 3)
     {
-      s->setPitch(static_cast<float>(octave - 2)
+      s->setPitch(sample->get_pitch_offset()
+                  + static_cast<float>(octave - 2)
                   + (static_cast<float>(note) / static_cast<float>(notes)));
     }
+    spdlog::debug("[{}] Pitch {}", name(), s->getPitch());
     sound = s.get();
     sounds[idx] = s.release();
   }
@@ -97,7 +121,28 @@ void Instrument::stop()
   }
 }
 
-const Sample* Instrument::lookup_sample(std::size_t /*octave*/, Note /*note*/) const
+namespace
 {
-  return &samples[0];
+
+  bool operator<=(const Instrument::NoteDef& x, const Instrument::NoteDef& y)
+  {
+    return x.first < y.first || (x.first == y.first && x.second <= y.second);
+  }
+
+} // anonymous namespace
+
+const Sample* Instrument::lookup_sample(std::size_t octave, Note note) const
+{
+  std::size_t i{0};
+  const NoteDef needle{octave, note};
+  for (; i < sample_lut.size(); ++i)
+  {
+    if (sample_lut[i].first <= needle
+        && needle <= sample_lut[i].second)
+    {
+      return (i < samples.size()) ? &samples[i] : nullptr;
+    }
+  }
+
+  return nullptr;
 }
