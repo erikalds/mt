@@ -27,6 +27,7 @@ public:
   ~MuzakTracker();
 
   int run();
+  void load_project(const std::filesystem::path& p);
 
 private:
   void create_actions();

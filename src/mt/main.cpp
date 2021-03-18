@@ -10,7 +10,7 @@ static constexpr auto USAGE =
   R"(mt - Muzak Tracker
 
 Usage:
-    mt [--debug]
+    mt [--debug] [<mzt-file>]
     mt (-h | --help)
     mt --version
 
@@ -43,5 +43,9 @@ int main(int argc, const char* argv[])
   spdlog::debug("ImGui version {}", IMGUI_VERSION);
 
   MuzakTracker mt;
+  if (args["<mzt-file>"])
+  {
+    mt.load_project(args["<mzt-file>"].asString());
+  }
   return mt.run();
 }

@@ -36,6 +36,11 @@ int MuzakTracker::run()
   return 0;
 }
 
+void MuzakTracker::load_project(const std::filesystem::path& p)
+{
+  open_project(p);
+}
+
 void MuzakTracker::create_actions()
 {
   using digg::Action;
