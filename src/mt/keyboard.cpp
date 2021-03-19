@@ -1,7 +1,7 @@
 #include "keyboard.h"
 
 #include "instrument.h"
-#include "note.h"
+#include "mtlib/note.h"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -27,51 +27,51 @@ void Keyboard::event_occurred(const sf::Event& e)
     return;
   }
 
-  std::function<void(std::size_t, Note)> action;
+  std::function<void(std::size_t, mt::Note)> action;
   if (e.type == sf::Event::KeyReleased)
   {
-    action = [this](std::size_t octave, Note note) { current_instrument->stop(octave, note); };
+    action = [this](std::size_t octave, mt::Note note) { current_instrument->stop(octave, note); };
   }
   else
   {
-    action = [this](std::size_t octave, Note note) { current_instrument->play(octave, note); };
+    action = [this](std::size_t octave, mt::Note note) { current_instrument->play(octave, note); };
   }
 
   auto octave = 3u;
   switch (e.key.code)
   {
-  case sf::Keyboard::Z: return action(octave, Note::C);
-  case sf::Keyboard::S: return action(octave, Note::C_sharp);
-  case sf::Keyboard::X: return action(octave, Note::D);
-  case sf::Keyboard::D: return action(octave, Note::D_sharp);
-  case sf::Keyboard::C: return action(octave, Note::E);
-  case sf::Keyboard::V: return action(octave, Note::F);
-  case sf::Keyboard::G: return action(octave, Note::F_sharp);
-  case sf::Keyboard::B: return action(octave, Note::G);
-  case sf::Keyboard::H: return action(octave, Note::G_sharp);
-  case sf::Keyboard::N: return action(octave, Note::A);
-  case sf::Keyboard::J: return action(octave, Note::A_sharp);
-  case sf::Keyboard::M: return action(octave, Note::B);
-  case sf::Keyboard::Comma: return action(octave + 1, Note::C);
-  case sf::Keyboard::L: return action(octave + 1, Note::C_sharp);
-  case sf::Keyboard::Period: return action(octave + 1, Note::D);
-  case sf::Keyboard::Q: return action(octave + 1, Note::C);
-  case sf::Keyboard::Num2: return action(octave + 1, Note::C_sharp);
-  case sf::Keyboard::W: return action(octave + 1, Note::D);
-  case sf::Keyboard::Num3: return action(octave + 1, Note::D_sharp);
-  case sf::Keyboard::E: return action(octave + 1, Note::E);
-  case sf::Keyboard::R: return action(octave + 1, Note::F);
-  case sf::Keyboard::Num5: return action(octave + 1, Note::F_sharp);
-  case sf::Keyboard::T: return action(octave + 1, Note::G);
-  case sf::Keyboard::Num6: return action(octave + 1, Note::G_sharp);
-  case sf::Keyboard::Y: return action(octave + 1, Note::A);
-  case sf::Keyboard::Num7: return action(octave + 1, Note::A_sharp);
-  case sf::Keyboard::U: return action(octave + 1, Note::B);
-  case sf::Keyboard::I: return action(octave + 2, Note::C);
-  case sf::Keyboard::Num9: return action(octave + 2, Note::C_sharp);
-  case sf::Keyboard::O: return action(octave + 2, Note::D);
-  case sf::Keyboard::Num0: return action(octave + 2, Note::D_sharp);
-  case sf::Keyboard::P: return action(octave + 2, Note::E);
+  case sf::Keyboard::Z: return action(octave, mt::Note::C);
+  case sf::Keyboard::S: return action(octave, mt::Note::C_sharp);
+  case sf::Keyboard::X: return action(octave, mt::Note::D);
+  case sf::Keyboard::D: return action(octave, mt::Note::D_sharp);
+  case sf::Keyboard::C: return action(octave, mt::Note::E);
+  case sf::Keyboard::V: return action(octave, mt::Note::F);
+  case sf::Keyboard::G: return action(octave, mt::Note::F_sharp);
+  case sf::Keyboard::B: return action(octave, mt::Note::G);
+  case sf::Keyboard::H: return action(octave, mt::Note::G_sharp);
+  case sf::Keyboard::N: return action(octave, mt::Note::A);
+  case sf::Keyboard::J: return action(octave, mt::Note::A_sharp);
+  case sf::Keyboard::M: return action(octave, mt::Note::B);
+  case sf::Keyboard::Comma: return action(octave + 1, mt::Note::C);
+  case sf::Keyboard::L: return action(octave + 1, mt::Note::C_sharp);
+  case sf::Keyboard::Period: return action(octave + 1, mt::Note::D);
+  case sf::Keyboard::Q: return action(octave + 1, mt::Note::C);
+  case sf::Keyboard::Num2: return action(octave + 1, mt::Note::C_sharp);
+  case sf::Keyboard::W: return action(octave + 1, mt::Note::D);
+  case sf::Keyboard::Num3: return action(octave + 1, mt::Note::D_sharp);
+  case sf::Keyboard::E: return action(octave + 1, mt::Note::E);
+  case sf::Keyboard::R: return action(octave + 1, mt::Note::F);
+  case sf::Keyboard::Num5: return action(octave + 1, mt::Note::F_sharp);
+  case sf::Keyboard::T: return action(octave + 1, mt::Note::G);
+  case sf::Keyboard::Num6: return action(octave + 1, mt::Note::G_sharp);
+  case sf::Keyboard::Y: return action(octave + 1, mt::Note::A);
+  case sf::Keyboard::Num7: return action(octave + 1, mt::Note::A_sharp);
+  case sf::Keyboard::U: return action(octave + 1, mt::Note::B);
+  case sf::Keyboard::I: return action(octave + 2, mt::Note::C);
+  case sf::Keyboard::Num9: return action(octave + 2, mt::Note::C_sharp);
+  case sf::Keyboard::O: return action(octave + 2, mt::Note::D);
+  case sf::Keyboard::Num0: return action(octave + 2, mt::Note::D_sharp);
+  case sf::Keyboard::P: return action(octave + 2, mt::Note::E);
   default: return;
   }
 }

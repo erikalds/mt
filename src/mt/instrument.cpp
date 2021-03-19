@@ -1,7 +1,7 @@
 #include "instrument.h"
 
-#include "note.h"
 #include "sample.h"
+#include "mtlib/note.h"
 #include <SFML/Audio/Sound.hpp>
 #include <spdlog/spdlog.h>
 #include <cassert>
@@ -66,8 +66,8 @@ void Instrument::set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>>
   sample_lut = std::move(ass);
   if (sample_lut.empty())
   {
-    sample_lut.emplace_back(std::make_pair(NoteDef{0, Note::C},
-                                           NoteDef{7, Note::B}));
+    sample_lut.emplace_back(std::make_pair(NoteDef{0, mt::Note::C},
+                                           NoteDef{7, mt::Note::B}));
   }
   spdlog::debug("Samples: {}", samples.size());
   for (auto i = 0U; i < sample_lut.size(); ++i)
@@ -78,7 +78,7 @@ void Instrument::set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>>
   }
 }
 
-void Instrument::play(std::size_t octave, Note note)
+void Instrument::play(std::size_t octave, mt::Note note)
 {
   const std::size_t idx = octave * notes + static_cast<std::size_t>(note);
   assert(idx < sounds.size());
@@ -119,7 +119,7 @@ void Instrument::play(std::size_t octave, Note note)
   }
 }
 
-void Instrument::stop(std::size_t octave, Note note)
+void Instrument::stop(std::size_t octave, mt::Note note)
 {
   const std::size_t idx = octave * notes + static_cast<std::size_t>(note);
   assert(idx < sounds.size());
@@ -156,7 +156,7 @@ namespace
 
 } // anonymous namespace
 
-const Sample* Instrument::lookup_sample(std::size_t octave, Note note) const
+const Sample* Instrument::lookup_sample(std::size_t octave, mt::Note note) const
 {
   std::size_t i{0};
   const NoteDef needle{octave, note};

@@ -7,7 +7,7 @@
 
 namespace sf { class Sound; }
 
-enum class Note;
+namespace mt { enum class Note; }
 class Sample;
 
 class Instrument
@@ -28,15 +28,15 @@ public:
   [[nodiscard]] const Sample* sample(std::size_t idx) const;
   [[nodiscard]] Sample* sample(std::size_t idx);
 
-  using NoteDef = std::pair<std::size_t, Note>;
+  using NoteDef = std::pair<std::size_t, mt::Note>;
   void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);
 
-  void play(std::size_t octave, Note note);
-  void stop(std::size_t octave, Note note);
+  void play(std::size_t octave, mt::Note note);
+  void stop(std::size_t octave, mt::Note note);
   void stop();
 
 private:
-  [[nodiscard]] const Sample* lookup_sample(std::size_t octave, Note note) const;
+  [[nodiscard]] const Sample* lookup_sample(std::size_t octave, mt::Note note) const;
 
   std::vector<Sample> samples;
   std::vector<sf::Sound*> sounds;

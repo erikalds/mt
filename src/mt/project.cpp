@@ -1,8 +1,8 @@
 #include "project.h"
 
 #include "instrument.h"
-#include "note.h"
 #include "sample.h"
+#include "mtlib/note.h"
 #include "base64/decode.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
@@ -45,8 +45,8 @@ namespace
       ++n;
     }
     auto octave = static_cast<std::size_t>(std::string{mo[2]}[0] - '0');
-    spdlog::debug("Parsed note def: {}-{} [{}-{}]", to_string(Note{n}), octave, n, std::string{mo[2]});
-    return Instrument::NoteDef(octave, Note{n});
+    spdlog::debug("Parsed note def: {}-{} [{}-{}]", mt::to_string(mt::Note{n}), octave, n, std::string{mo[2]});
+    return Instrument::NoteDef(octave, mt::Note{n});
   }
 
 } // anonymous namespace
@@ -78,8 +78,8 @@ void Project::load_from_file(const std::filesystem::path& filename)
     std::vector<std::pair<Instrument::NoteDef, Instrument::NoteDef>> assignments{};
     for (const auto& ass_node : node["sample-assignments"])
     {
-      Instrument::NoteDef begin = std::make_pair(0, Note::C);
-      Instrument::NoteDef end = std::make_pair(7, Note::B);
+      Instrument::NoteDef begin = std::make_pair(0, mt::Note::C);
+      Instrument::NoteDef end = std::make_pair(7, mt::Note::B);
       if (ass_node["begin"].IsDefined())
       {
         begin = parse_notedef(ass_node["begin"].as<std::string>());
