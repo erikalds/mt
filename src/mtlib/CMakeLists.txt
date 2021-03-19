@@ -1,6 +1,8 @@
 add_library(mtlib STATIC
   note.cpp
   note.h
+  sample.cpp
+  sample.h
   sample_data_iterator.h)
 
 target_include_directories(mtlib PRIVATE ${INTERNAL_INCLUDES})

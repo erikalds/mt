@@ -3,7 +3,7 @@
 #include "instrument.h"
 #include "instrument_selection_listener.h"
 #include "project.h"
-#include "sample.h"
+#include "mtlib/sample.h"
 
 #include <imgui.h>
 
@@ -65,7 +65,7 @@ void InstrumentList::add_selection_listener(InstrumentSelectionListener& listene
 {
   listeners.insert(&listener);
   auto* instr = project->get_instrument(static_cast<std::size_t>(current_item));
-  Sample* sample = nullptr;
+  mt::Sample* sample = nullptr;
   if (instr != nullptr)
   {
     sample = instr->sample(static_cast<std::size_t>(current_sample));
@@ -81,7 +81,7 @@ void InstrumentList::remove_selection_listener(InstrumentSelectionListener& list
 void InstrumentList::notify_listeners() const
 {
   auto* instr = project->get_instrument(static_cast<std::size_t>(current_item));
-  Sample* sample = nullptr;
+  mt::Sample* sample = nullptr;
   if (instr != nullptr)
   {
     sample = instr->sample(static_cast<std::size_t>(current_sample));

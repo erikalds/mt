@@ -1,7 +1,7 @@
 #include "instrument_editor.h"
 
 #include "instrument.h"
-#include "sample.h"
+#include "mtlib/sample.h"
 #include <cstring>
 #include <imgui.h>
 #include <array>
@@ -11,7 +11,7 @@ InstrumentEditor::InstrumentEditor() :
 {
 }
 
-void InstrumentEditor::selected_instrument_changed(Instrument* i, Sample* s)
+void InstrumentEditor::selected_instrument_changed(Instrument* i, mt::Sample* s)
 {
   instrument = i;
   sample = s;

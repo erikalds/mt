@@ -1,8 +1,8 @@
 #include "project.h"
 
 #include "instrument.h"
-#include "sample.h"
 #include "mtlib/note.h"
+#include "mtlib/sample.h"
 #include "base64/decode.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
@@ -71,9 +71,9 @@ void Project::load_from_file(const std::filesystem::path& filename)
       pcm_data.resize(b64::data_size(b64data.c_str()), 0);
       b64::decode(b64data.c_str(),
                   &pcm_data[0], pcm_data.size());
-      instruments.back().add_sample(Sample{sample_node["name"].as<std::string>(),
-                                           &pcm_data[0], pcm_data.size(),
-                                           sample_node["pitch-offset"].as<float>()});
+      instruments.back().add_sample(mt::Sample{sample_node["name"].as<std::string>(),
+                                               &pcm_data[0], pcm_data.size(),
+                                               sample_node["pitch-offset"].as<float>()});
     }
     std::vector<std::pair<Instrument::NoteDef, Instrument::NoteDef>> assignments{};
     for (const auto& ass_node : node["sample-assignments"])

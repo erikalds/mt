@@ -10,13 +10,13 @@ class InstrumentEditor : public digg::SubWindow,
 public:
   InstrumentEditor();
 
-  void selected_instrument_changed(Instrument* i, Sample* s) override;
+  void selected_instrument_changed(Instrument* i, mt::Sample* s) override;
 
   void draw_widgets() override;
 
 private:
   Instrument* instrument = nullptr;
-  Sample* sample = nullptr;
+  mt::Sample* sample = nullptr;
 };
 
 #endif /* INSTRUMENT_EDITOR_H */

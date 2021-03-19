@@ -7,8 +7,10 @@
 
 namespace sf { class Sound; }
 
-namespace mt { enum class Note; }
-class Sample;
+namespace mt {
+  enum class Note;
+  class Sample;
+}
 
 class Instrument
 {
@@ -23,10 +25,10 @@ public:
   [[nodiscard]] std::string_view name() const { return instr_name; }
   void set_name(std::string_view n) { instr_name = n; }
 
-  void add_sample(Sample&& sample);
+  void add_sample(mt::Sample&& sample);
   [[nodiscard]] std::size_t sample_count() const;
-  [[nodiscard]] const Sample* sample(std::size_t idx) const;
-  [[nodiscard]] Sample* sample(std::size_t idx);
+  [[nodiscard]] const mt::Sample* sample(std::size_t idx) const;
+  [[nodiscard]] mt::Sample* sample(std::size_t idx);
 
   using NoteDef = std::pair<std::size_t, mt::Note>;
   void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);
@@ -36,9 +38,9 @@ public:
   void stop();
 
 private:
-  [[nodiscard]] const Sample* lookup_sample(std::size_t octave, mt::Note note) const;
+  [[nodiscard]] const mt::Sample* lookup_sample(std::size_t octave, mt::Note note) const;
 
-  std::vector<Sample> samples;
+  std::vector<mt::Sample> samples;
   std::vector<sf::Sound*> sounds;
   std::string instr_name;
   std::vector<std::pair<NoteDef, NoteDef>> sample_lut;

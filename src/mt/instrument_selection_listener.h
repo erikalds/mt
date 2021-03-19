@@ -2,14 +2,14 @@
 #define INSTRUMENT_SELECTION_LISTENER_H
 
 class Instrument;
-class Sample;
+namespace mt { class Sample; }
 
 class InstrumentSelectionListener
 {
 public:
   virtual ~InstrumentSelectionListener() = 0;
 
-  virtual void selected_instrument_changed(Instrument* instr, Sample* sample) = 0;
+  virtual void selected_instrument_changed(Instrument* instr, mt::Sample* sample) = 0;
 };
 
 inline InstrumentSelectionListener::~InstrumentSelectionListener() = default;

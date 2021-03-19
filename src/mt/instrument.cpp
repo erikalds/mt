@@ -1,6 +1,6 @@
 #include "instrument.h"
 
-#include "sample.h"
+#include "mtlib/sample.h"
 #include "mtlib/note.h"
 #include <SFML/Audio/Sound.hpp>
 #include <spdlog/spdlog.h>
@@ -31,7 +31,7 @@ Instrument::~Instrument()
   }
 }
 
-void Instrument::add_sample(Sample&& sample)
+void Instrument::add_sample(mt::Sample&& sample)
 {
   samples.emplace_back(sample);
 }
@@ -41,7 +41,7 @@ std::size_t Instrument::sample_count() const
   return samples.size();
 }
 
-const Sample* Instrument::sample(std::size_t idx) const
+const mt::Sample* Instrument::sample(std::size_t idx) const
 {
   if (idx < samples.size())
   {
@@ -51,7 +51,7 @@ const Sample* Instrument::sample(std::size_t idx) const
   return nullptr;
 }
 
-Sample* Instrument::sample(std::size_t idx)
+mt::Sample* Instrument::sample(std::size_t idx)
 {
   if (idx < samples.size())
   {
@@ -156,7 +156,8 @@ namespace
 
 } // anonymous namespace
 
-const Sample* Instrument::lookup_sample(std::size_t octave, mt::Note note) const
+const mt::Sample* Instrument::lookup_sample(std::size_t octave,
+                                            mt::Note note) const
 {
   std::size_t i{0};
   const NoteDef needle{octave, note};
