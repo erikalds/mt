@@ -1,6 +1,6 @@
 #include "project.h"
 
-#include "instrument.h"
+#include "mtlib/instrument.h"
 #include "mtlib/note.h"
 #include "mtlib/sample.h"
 #include "base64/decode.h"
@@ -20,7 +20,7 @@ Project::~Project() = default;
 namespace
 {
 
-  Instrument::NoteDef parse_notedef(const std::string& nd)
+  mt::Instrument::NoteDef parse_notedef(const std::string& nd)
   {
     const std::string rxs{"([A-G]#?)\\-([0-7])"};
     const std::regex rx{rxs};
@@ -46,7 +46,7 @@ namespace
     }
     auto octave = static_cast<std::size_t>(std::string{mo[2]}[0] - '0');
     spdlog::debug("Parsed note def: {}-{} [{}-{}]", mt::to_string(mt::Note{n}), octave, n, std::string{mo[2]});
-    return Instrument::NoteDef(octave, mt::Note{n});
+    return mt::Instrument::NoteDef(octave, mt::Note{n});
   }
 
 } // anonymous namespace
@@ -63,7 +63,7 @@ void Project::load_from_file(const std::filesystem::path& filename)
   for (const auto& node : rootnode["project"]["instruments"])
   {
     spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
-    instruments.emplace_back(Instrument{node["name"].as<std::string>()});
+    instruments.emplace_back(mt::Instrument{node["name"].as<std::string>()});
     for (const auto& sample_node : node["samples"])
     {
       auto b64data = sample_node["pcm-data"].as<std::string>();
@@ -75,11 +75,11 @@ void Project::load_from_file(const std::filesystem::path& filename)
                                                &pcm_data[0], pcm_data.size(),
                                                sample_node["pitch-offset"].as<float>()});
     }
-    std::vector<std::pair<Instrument::NoteDef, Instrument::NoteDef>> assignments{};
+    std::vector<std::pair<mt::Instrument::NoteDef, mt::Instrument::NoteDef>> assignments{};
     for (const auto& ass_node : node["sample-assignments"])
     {
-      Instrument::NoteDef begin = std::make_pair(0, mt::Note::C);
-      Instrument::NoteDef end = std::make_pair(7, mt::Note::B);
+      mt::Instrument::NoteDef begin = std::make_pair(0, mt::Note::C);
+      mt::Instrument::NoteDef end = std::make_pair(7, mt::Note::B);
       if (ass_node["begin"].IsDefined())
       {
         begin = parse_notedef(ass_node["begin"].as<std::string>());
@@ -94,7 +94,7 @@ void Project::load_from_file(const std::filesystem::path& filename)
   }
 }
 
-Instrument* Project::get_instrument(std::size_t idx)
+mt::Instrument* Project::get_instrument(std::size_t idx)
 {
   if (idx < instruments.size())
   {
@@ -104,7 +104,7 @@ Instrument* Project::get_instrument(std::size_t idx)
   return nullptr;
 }
 
-const Instrument* Project::get_instrument(std::size_t idx) const
+const mt::Instrument* Project::get_instrument(std::size_t idx) const
 {
   if (idx < instruments.size())
   {

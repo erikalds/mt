@@ -1,6 +1,4 @@
 add_executable(mt
-  instrument.cpp
-  instrument.h
   instrument_editor.cpp
   instrument_editor.h
   instrument_list.cpp

@@ -1,6 +1,6 @@
 #include "keyboard.h"
 
-#include "instrument.h"
+#include "mtlib/instrument.h"
 #include "mtlib/note.h"
 
 #include <SFML/Window/Event.hpp>
@@ -76,7 +76,7 @@ void Keyboard::event_occurred(const sf::Event& e)
   }
 }
 
-void Keyboard::set_current_instrument(Instrument* instr)
+void Keyboard::set_current_instrument(mt::Instrument* instr)
 {
   if (current_instrument != nullptr)
   {

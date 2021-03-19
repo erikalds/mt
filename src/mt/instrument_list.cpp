@@ -1,8 +1,8 @@
 #include "instrument_list.h"
 
-#include "instrument.h"
 #include "instrument_selection_listener.h"
 #include "project.h"
+#include "mtlib/instrument.h"
 #include "mtlib/sample.h"
 
 #include <imgui.h>
