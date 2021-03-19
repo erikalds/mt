@@ -12,10 +12,11 @@ namespace digg
   class MainWindow;
 }  // namespace digg
 
+namespace mt { class Project; }
+
 class InstrumentEditor;
 class InstrumentList;
 class Keyboard;
-class Project;
 
 class MuzakTracker
 {
@@ -35,13 +36,13 @@ private:
   void create_menubar();
 
   void open_project(const std::filesystem::path& filename);
-  void set_current_project(std::unique_ptr<Project> p);
+  void set_current_project(std::unique_ptr<mt::Project> p);
 
   std::unique_ptr<digg::MainWindow> main_window;
   std::unique_ptr<Keyboard> keyboard;
   std::unique_ptr<InstrumentList> instrument_list;
   std::unique_ptr<InstrumentEditor> instrument_editor;
-  std::unique_ptr<Project> project;
+  std::unique_ptr<mt::Project> project;
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;
   std::unique_ptr<digg::FileDialog> file_dialog;

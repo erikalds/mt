@@ -4,15 +4,16 @@
 #include "digg/subwindow.h"
 #include <set>
 
+namespace mt { class Project; }
+
 class InstrumentSelectionListener;
-class Project;
 
 class InstrumentList : public digg::SubWindow
 {
 public:
   InstrumentList();
 
-  void set_current_project(Project& proj);
+  void set_current_project(mt::Project& proj);
   void draw_widgets() override;
 
   void add_selection_listener(InstrumentSelectionListener& listener);
@@ -21,7 +22,7 @@ public:
 private:
   void notify_listeners() const;
 
-  Project* project = nullptr;
+  mt::Project* project = nullptr;
   int current_item = 0;
   int current_sample = 0;
 

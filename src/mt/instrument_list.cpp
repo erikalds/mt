@@ -1,7 +1,7 @@
 #include "instrument_list.h"
 
 #include "instrument_selection_listener.h"
-#include "project.h"
+#include "mtlib/project.h"
 #include "mtlib/instrument.h"
 #include "mtlib/sample.h"
 
@@ -12,7 +12,7 @@ InstrumentList::InstrumentList() :
 {
 }
 
-void InstrumentList::set_current_project(Project& proj)
+void InstrumentList::set_current_project(mt::Project& proj)
 {
   project = &proj;
   if (current_item != 0)

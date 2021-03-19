@@ -3,7 +3,7 @@
 #include "instrument_editor.h"
 #include "instrument_list.h"
 #include "keyboard.h"
-#include "project.h"
+#include "mtlib/project.h"
 
 #include "digg/action.h"
 #include "digg/event_processor.h"
@@ -19,7 +19,7 @@ MuzakTracker::MuzakTracker() :
   instrument_list{std::make_unique<InstrumentList>()},
   instrument_editor{std::make_unique<InstrumentEditor>()}
 {
-  set_current_project(std::make_unique<Project>());
+  set_current_project(std::make_unique<mt::Project>());
   instrument_list->add_selection_listener(*keyboard);
   instrument_list->add_selection_listener(*instrument_editor);
 
@@ -124,13 +124,13 @@ void MuzakTracker::create_menubar()
 void MuzakTracker::open_project(const std::filesystem::path& filename)
 {
   spdlog::info("Open project: {}", filename.string());
-  auto new_proj = std::make_unique<Project>();
+  auto new_proj = std::make_unique<mt::Project>();
   instrument_list->set_current_project(*new_proj);
   new_proj->load_from_file(filename);
   set_current_project(std::move(new_proj));
 }
 
-void MuzakTracker::set_current_project(std::unique_ptr<Project> p)
+void MuzakTracker::set_current_project(std::unique_ptr<mt::Project> p)
 {
   project = std::move(p);
 
