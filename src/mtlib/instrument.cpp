@@ -67,46 +67,45 @@ namespace mt {
     sample_lut = std::move(ass);
     if (sample_lut.empty())
     {
-      sample_lut.emplace_back(std::make_pair(NoteDef{0, Note::C},
-                                             NoteDef{7, Note::B}));
+      sample_lut.emplace_back(std::make_pair(NoteDef{Note::C, 0},
+                                             NoteDef{Note::B, 7}));
     }
     spdlog::debug("Samples: {}", samples.size());
     for (auto i = 0U; i < sample_lut.size(); ++i)
     {
-      spdlog::debug(" - {}: [{}-{}] - [{}-{}]", i,
-                    sample_lut[i].first.second, sample_lut[i].first.first,
-                    sample_lut[i].second.second, sample_lut[i].second.first);
+      spdlog::debug(" - {}: [{}] - [{}]", i,
+                    sample_lut[i].first, sample_lut[i].second);
     }
   }
 
-  void Instrument::play(std::size_t octave, Note note)
+  void Instrument::play(const NoteDef& notedef)
   {
-    const std::size_t idx = octave * notes + static_cast<std::size_t>(note);
+    const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
     assert(idx < sounds.size());
     auto* sound = sounds[idx];
     if (sound == nullptr)
     {
-      const auto* sample = lookup_sample(octave, note);
+      const auto* sample = lookup_sample(notedef);
       if (sample == nullptr)
       {
-        spdlog::debug("[{}] No sample found for {}-{} [{}]", name(), note, octave, idx);
+        spdlog::debug("[{}] No sample found for {} [{}]", name(), notedef, idx);
         return;
       }
-      spdlog::debug("[{}] Create sound {}-{} [{}]", name(), note, octave, idx);
+      spdlog::debug("[{}] Create sound {} [{}]", name(), notedef, idx);
       auto s = sample->create_sound();
       s->setLoop(true);
-      if (octave >= 3)
+      if (notedef.octave >= 3)
       {
         s->setPitch(sample->get_pitch_offset()
-                    + static_cast<float>(octave - 2)
-                    + (static_cast<float>(note) / static_cast<float>(notes)));
+                    + static_cast<float>(notedef.octave - 2)
+                    + (static_cast<float>(notedef.note) / static_cast<float>(notes)));
       }
       spdlog::debug("[{}] Pitch {}", name(), s->getPitch());
       sound = s.get();
       sounds[idx] = s.release();
     }
 
-    spdlog::debug("[{}] Got sound {}-{} [{}]", name(), note, octave, idx);
+    spdlog::debug("[{}] Got sound {} [{}]", name(), notedef, idx);
 
     if (sound->getStatus() != sf::SoundSource::Playing)
     {
@@ -115,14 +114,14 @@ namespace mt {
         spdlog::debug("[{}] Instrument has no sound_buffer", name());
         //sound->setBuffer(sound_buffer);
       }
-      spdlog::debug("[{}] Play {}-{} [{}]", name(), note, octave, idx);
+      spdlog::debug("[{}] Play {} [{}]", name(), notedef, idx);
       sound->play();
     }
   }
 
-  void Instrument::stop(std::size_t octave, Note note)
+  void Instrument::stop(const NoteDef& notedef)
   {
-    const std::size_t idx = octave * notes + static_cast<std::size_t>(note);
+    const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
     assert(idx < sounds.size());
     std::unique_ptr<sf::Sound> sound{sounds[idx]};
     if (!sound)
@@ -133,7 +132,7 @@ namespace mt {
 
     if (sound->getStatus() == sf::SoundSource::Playing)
     {
-      spdlog::debug("Stop instrument {}-{} [{}]", note, octave, idx);
+      spdlog::debug("Stop instrument {} [{}]", notedef, idx);
       sound->stop();
     }
   }
@@ -147,25 +146,13 @@ namespace mt {
     }
   }
 
-  namespace
-  {
-
-    bool operator<=(const Instrument::NoteDef& x, const Instrument::NoteDef& y)
-    {
-      return x.first < y.first || (x.first == y.first && x.second <= y.second);
-    }
-
-  } // anonymous namespace
-
-  const Sample* Instrument::lookup_sample(std::size_t octave,
-                                          Note note) const
+  const Sample* Instrument::lookup_sample(const NoteDef& notedef) const
   {
     std::size_t i{0};
-    const NoteDef needle{octave, note};
     for (; i < sample_lut.size(); ++i)
     {
-      if (sample_lut[i].first <= needle
-          && needle <= sample_lut[i].second)
+      if (sample_lut[i].first <= notedef
+          && notedef <= sample_lut[i].second)
       {
         return (i < samples.size()) ? &samples[i] : nullptr;
       }

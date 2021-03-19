@@ -19,40 +19,6 @@ namespace mt {
 
   Project::~Project() = default;
 
-  namespace
-  {
-
-    Instrument::NoteDef parse_notedef(const std::string& nd)
-    {
-      const std::string rxs{"([A-G]#?)\\-([0-7])"};
-      const std::regex rx{rxs};
-      std::smatch mo;
-      spdlog::debug("parse notedef {} using regex {}", nd, rxs);
-
-      assert(std::regex_match(nd, mo, rx));
-      auto notestr = std::string{mo[1]};
-      int n = (static_cast<int>(notestr[0]) - static_cast<int>('C')) * 2;
-      constexpr const int notecount{12};
-      if (n < 0)
-      {
-        n = notecount - n + 1;
-      }
-      else if (n >= 6) // no semi-note between E and F
-      {
-        n -= 1;
-      }
-      if (notestr.size() > 1)
-      {
-        assert(notestr[1] == '#');
-        ++n;
-      }
-      auto octave = static_cast<std::size_t>(std::string{mo[2]}[0] - '0');
-      spdlog::debug("Parsed note def: {}-{} [{}-{}]", to_string(Note{n}), octave, n, std::string{mo[2]});
-      return Instrument::NoteDef(octave, Note{n});
-    }
-
-  } // anonymous namespace
-
   void Project::load_from_file(const std::filesystem::path& filename)
   {
     auto rootnode = YAML::LoadFile(filename);
@@ -77,18 +43,18 @@ namespace mt {
                                              &pcm_data[0], pcm_data.size(),
                                              sample_node["pitch-offset"].as<float>()});
       }
-      std::vector<std::pair<Instrument::NoteDef, Instrument::NoteDef>> assignments{};
+      std::vector<std::pair<NoteDef, NoteDef>> assignments{};
       for (const auto& ass_node : node["sample-assignments"])
       {
-        Instrument::NoteDef begin = std::make_pair(0, Note::C);
-        Instrument::NoteDef end = std::make_pair(7, Note::B);
+        NoteDef begin{Note::C, 0};
+        NoteDef end{Note::B, 7};
         if (ass_node["begin"].IsDefined())
         {
-          begin = parse_notedef(ass_node["begin"].as<std::string>());
+          begin = NoteDef::from_string(ass_node["begin"].as<std::string>());
         }
         if (ass_node["end"].IsDefined())
         {
-          end = parse_notedef(ass_node["end"].as<std::string>());
+          end = NoteDef::from_string(ass_node["end"].as<std::string>());
         }
         assignments.emplace_back(std::make_pair(begin, end));
       }

@@ -30,11 +30,17 @@ void Keyboard::event_occurred(const sf::Event& e)
   std::function<void(std::size_t, mt::Note)> action;
   if (e.type == sf::Event::KeyReleased)
   {
-    action = [this](std::size_t octave, mt::Note note) { current_instrument->stop(octave, note); };
+    action = [this](std::size_t octave, mt::Note note)
+             {
+               current_instrument->stop(mt::NoteDef{note, octave});
+             };
   }
   else
   {
-    action = [this](std::size_t octave, mt::Note note) { current_instrument->play(octave, note); };
+    action = [this](std::size_t octave, mt::Note note)
+             {
+               current_instrument->play(mt::NoteDef{note, octave});
+             };
   }
 
   auto octave = 3u;
