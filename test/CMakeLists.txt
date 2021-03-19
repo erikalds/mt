@@ -12,3 +12,4 @@ target_link_libraries(catch_main PRIVATE project_options)
 
 add_subdirectory(digg)
 add_subdirectory(base64)
+add_subdirectory(mtlib)
