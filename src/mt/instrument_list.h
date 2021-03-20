@@ -21,9 +21,10 @@ public:
 
 private:
   void notify_listeners() const;
+  void notify_listener(InstrumentSelectionListener& listener) const;
 
   mt::Project* project = nullptr;
-  int current_item = 0;
+  int current_instrument = 0;
   int current_sample = 0;
 
   std::set<InstrumentSelectionListener*> listeners;
