@@ -1,5 +1,8 @@
 #include "sample.h"
 
+#include "audio_data_presenter.h"
+#include "mtlib/sample_data_iterator.h"
+#include <cstdint>
 #include <spdlog/spdlog.h>
 #include <SFML/Audio/Sound.hpp>
 
@@ -25,6 +28,19 @@ namespace mt {
     auto s = std::make_unique<sf::Sound>();
     s->setBuffer(sound_buffer);
     return s;
+  }
+
+  void Sample::present_audio_data(AudioDataPresenter& p) const
+  {
+    p.present_details(sound_buffer.getSampleRate(), sound_buffer.getDuration());
+    for (auto channel = 0U; channel < sound_buffer.getChannelCount(); ++channel)
+    {
+      p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.getSamples(),
+                                                                 sound_buffer.getSampleCount(),
+                                                                 sound_buffer.getChannelCount(),
+                                                                 channel},
+                        sample_data_iterator<const std::int16_t>{});
+    }
   }
 
 }  // namespace mt

@@ -14,11 +14,12 @@ InstrumentEditor::InstrumentEditor() :
 void InstrumentEditor::selected_instrument_changed(mt::Instrument* i, mt::Sample* s)
 {
   instrument = i;
-  sample = s;
-  if (sample)
+  if (s != nullptr && s != sample)
   {
-    //sample->
+    sample_view.clear();
+    s->present_audio_data(sample_view);
   }
+  sample = s;
 }
 
 namespace
@@ -50,5 +51,5 @@ void InstrumentEditor::draw_widgets()
   input_text(instrument, "Name");
   input_text(sample, "Sample Name");
 
-  //ImGui::PlotLines("Wave-form",
+  sample_view.paint();
 }

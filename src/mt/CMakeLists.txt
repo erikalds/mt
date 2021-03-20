@@ -7,7 +7,9 @@ add_executable(mt
   keyboard.h
   main.cpp
   muzaktracker.cpp
-  muzaktracker.h)
+  muzaktracker.h
+  sample_view.cpp
+  sample_view.h)
 
 target_include_directories(mt PRIVATE ${INTERNAL_INCLUDES})
 

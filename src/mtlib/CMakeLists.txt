@@ -1,4 +1,5 @@
 add_library(mtlib STATIC
+  audio_data_presenter.h
   instrument.cpp
   instrument.h
   note.cpp

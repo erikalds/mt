@@ -2,6 +2,7 @@
 #define INSTRUMENT_EDITOR_H
 
 #include "instrument_selection_listener.h"
+#include "sample_view.h"
 #include "digg/subwindow.h"
 
 class InstrumentEditor : public digg::SubWindow,
@@ -17,6 +18,7 @@ public:
 private:
   mt::Instrument* instrument = nullptr;
   mt::Sample* sample = nullptr;
+  SampleView sample_view;
 };
 
 #endif /* INSTRUMENT_EDITOR_H */

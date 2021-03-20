@@ -10,6 +10,8 @@ namespace sf { class Sound; }
 
 namespace mt {
 
+  class AudioDataPresenter;
+
   class Sample
   {
   public:
@@ -22,6 +24,8 @@ namespace mt {
     void set_name(std::string_view n) { sample_name = n; }
 
     float get_pitch_offset() const { return pitch_offset; }
+
+    void present_audio_data(AudioDataPresenter& p) const;
 
   private:
     sf::SoundBuffer sound_buffer;
