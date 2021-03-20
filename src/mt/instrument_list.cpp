@@ -15,11 +15,8 @@ InstrumentList::InstrumentList() :
 void InstrumentList::set_current_project(mt::Project& proj)
 {
   project = &proj;
-  if (current_item != 0)
-  {
-    current_item = 0;
-    notify_listeners();
-  }
+  current_item = 0;
+  notify_listeners();
 }
 
 void InstrumentList::draw_widgets()
