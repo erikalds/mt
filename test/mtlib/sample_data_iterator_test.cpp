@@ -87,6 +87,12 @@ TEST_CASE("sample_data_iterator.mono_sample", "[iterator]")
     CHECK(!(end > (iter + data.size())));
     CHECK(end >= (iter + data.size()));
   }
+  SECTION("distance")
+  {
+    CHECK(10U == std::distance(iter, end));
+    CHECK(4U == std::distance(iter + 2, iter + 6));
+    CHECK(0U == std::distance(end, end));
+  }
 }
 
 TEST_CASE("sample_data_iterator.stereo_sample", "[iterator]")
@@ -230,5 +236,14 @@ TEST_CASE("sample_data_iterator.stereo_sample", "[iterator]")
     CHECK(end >= end);
     CHECK(!(end > (riter + data.size())));
     CHECK(end >= (riter + data.size()));
+  }
+  SECTION("distance")
+  {
+    CHECK(10U == std::distance(liter, end));
+    CHECK(10U == std::distance(riter, end));
+    CHECK(9U == std::distance(riter + 1, end));
+    CHECK(4U == std::distance(liter + 3, liter + 7));
+    CHECK(5U == std::distance(riter + 3, riter + 8));
+    CHECK(4U == std::distance(riter + 4, riter + 8));
   }
 }
