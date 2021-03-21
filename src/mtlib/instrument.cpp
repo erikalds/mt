@@ -37,6 +37,11 @@ namespace mt {
     samples.emplace_back(sample);
   }
 
+  void Instrument::remove_sample(std::size_t idx)
+  {
+    samples.erase(samples.begin() + static_cast<int>(idx));
+  }
+
   std::size_t Instrument::sample_count() const
   {
     return samples.size();
@@ -148,6 +153,11 @@ namespace mt {
 
   const Sample* Instrument::lookup_sample(const NoteDef& notedef) const
   {
+    if (sample_lut.empty())
+    {
+      return samples.empty() ? nullptr : &samples[0];
+    }
+
     std::size_t i{0};
     for (; i < sample_lut.size(); ++i)
     {

@@ -2,6 +2,7 @@
 #define PROJECT_H
 
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -18,6 +19,9 @@ namespace mt {
 
     void load_from_file(const std::filesystem::path& filename);
 
+    void add_instrument(Instrument instr);
+    void remove_instrument(std::size_t idx);
+
     [[nodiscard]] Instrument* get_instrument(std::size_t idx);
     [[nodiscard]] const Instrument* get_instrument(std::size_t idx) const;
     [[nodiscard]] std::size_t instrument_count() const;
@@ -26,7 +30,7 @@ namespace mt {
   private:
     std::string title;
     std::string project_filename;
-    std::vector<Instrument> instruments;
+    std::vector<std::unique_ptr<Instrument>> instruments;
   };
 
 } // namespace mt

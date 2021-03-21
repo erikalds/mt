@@ -31,7 +31,7 @@ namespace mt {
     for (const auto& node : rootnode["project"]["instruments"])
     {
       spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
-      instruments.emplace_back(Instrument{node["name"].as<std::string>()});
+      instruments.emplace_back(std::make_unique<Instrument>(node["name"].as<std::string>()));
       for (const auto& sample_node : node["samples"])
       {
         auto b64data = sample_node["pcm-data"].as<std::string>();
@@ -39,9 +39,9 @@ namespace mt {
         pcm_data.resize(b64::data_size(b64data.c_str()), 0);
         b64::decode(b64data.c_str(),
                     &pcm_data[0], pcm_data.size());
-        instruments.back().add_sample(Sample{sample_node["name"].as<std::string>(),
-                                             &pcm_data[0], pcm_data.size(),
-                                             sample_node["pitch-offset"].as<float>()});
+        instruments.back()->add_sample(Sample{sample_node["name"].as<std::string>(),
+                                              &pcm_data[0], pcm_data.size(),
+                                              sample_node["pitch-offset"].as<float>()});
       }
       std::vector<std::pair<NoteDef, NoteDef>> assignments{};
       for (const auto& ass_node : node["sample-assignments"])
@@ -58,15 +58,26 @@ namespace mt {
         }
         assignments.emplace_back(std::make_pair(begin, end));
       }
-      instruments.back().set_sample_assignments(std::move(assignments));
+      instruments.back()->set_sample_assignments(std::move(assignments));
     }
+  }
+
+  void Project::add_instrument(Instrument instr)
+  {
+    instruments.emplace_back(std::make_unique<Instrument>(std::move(instr)));
+  }
+
+  void Project::remove_instrument(std::size_t idx)
+  {
+    instruments.erase(instruments.begin() + static_cast<int>(idx));
+    // reindex?
   }
 
   Instrument* Project::get_instrument(std::size_t idx)
   {
     if (idx < instruments.size())
     {
-      return &instruments[idx];
+      return instruments[idx].get();
     }
 
     return nullptr;
@@ -76,7 +87,7 @@ namespace mt {
   {
     if (idx < instruments.size())
     {
-      return &instruments[idx];
+      return instruments[idx].get();
     }
 
     return nullptr;

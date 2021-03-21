@@ -8,6 +8,20 @@
 
 namespace mt {
 
+  Sample::Sample(const std::filesystem::path& fname) :
+    sample_name{fname.filename()},
+    pitch_offset{0}
+  {
+    if (!sound_buffer.loadFromFile(fname.string()))
+    {
+      spdlog::error("Failed to load PCM data for sample: {}", name());
+    }
+    else
+    {
+      spdlog::debug("Successfully loaded PCM data for sample: {}", name());
+    }
+  }
+
   Sample::Sample(std::string name_, void* pcm_data, std::size_t data_size,
                  float pitch_offset_) :
     sample_name{std::move(name_)},

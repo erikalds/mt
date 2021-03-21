@@ -26,6 +26,7 @@ namespace mt {
     void set_name(std::string_view n) { instr_name = n; }
 
     void add_sample(Sample&& sample);
+    void remove_sample(std::size_t idx);
     [[nodiscard]] std::size_t sample_count() const;
     [[nodiscard]] const Sample* sample(std::size_t idx) const;
     [[nodiscard]] Sample* sample(std::size_t idx);
