@@ -71,6 +71,35 @@ void MuzakTracker::create_actions()
                                      this->main_window->add_widget(*this->file_dialog);
                                    },
                                    Action::shortcut(sf::Keyboard::O, true, false)});
+  file_actions.emplace_back(Action{"Save",
+                                   [this]()
+                                   {
+                                     spdlog::info("Save");
+                                     this->project->save();
+                                   },
+                                   Action::shortcut(sf::Keyboard::S, true, false)});
+  file_actions.emplace_back(Action{"Save as...",
+                                   [this]()
+                                   {
+                                     spdlog::info("Save as...");
+                                     auto close_dialog
+                                       = [this]()
+                                         {
+                                           this->main_window->remove_widget(*this->file_dialog);
+                                         };
+                                     auto save
+                                       = [this, close_dialog](const std::filesystem::path& filename)
+                                         {
+                                           close_dialog();
+                                           this->save_project_as(filename);
+                                         };
+                                     this->file_dialog
+                                       = std::make_unique<digg::FileDialog>("Save project as...",
+                                                                            "*.mzt",
+                                                                            save,
+                                                                            close_dialog);
+                                     this->main_window->add_widget(*this->file_dialog);
+                                   }});
   file_actions.emplace_back(Action{"Quit",
                                    [this]()
                                    {
@@ -128,6 +157,12 @@ void MuzakTracker::open_project(const std::filesystem::path& filename)
   instrument_list->set_current_project(*new_proj);
   new_proj->load_from_file(filename);
   set_current_project(std::move(new_proj));
+}
+
+void MuzakTracker::save_project_as(const std::filesystem::path& filename)
+{
+  spdlog::info("Save project: {}", filename.string());
+  project->save_as(filename);
 }
 
 void MuzakTracker::set_current_project(std::unique_ptr<mt::Project> p)

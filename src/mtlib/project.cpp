@@ -3,10 +3,10 @@
 #include "mtlib/instrument.h"
 #include "mtlib/note.h"
 #include "mtlib/sample.h"
-#include "base64/decode.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 #include <cassert>
+#include <fstream>
 #include <regex>
 
 
@@ -30,36 +30,27 @@ namespace mt {
 
     for (const auto& node : rootnode["project"]["instruments"])
     {
-      spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
-      instruments.emplace_back(std::make_unique<Instrument>(node["name"].as<std::string>()));
-      for (const auto& sample_node : node["samples"])
-      {
-        auto b64data = sample_node["pcm-data"].as<std::string>();
-        std::vector<unsigned char> pcm_data;
-        pcm_data.resize(b64::data_size(b64data.c_str()), 0);
-        b64::decode(b64data.c_str(),
-                    &pcm_data[0], pcm_data.size());
-        instruments.back()->add_sample(Sample{sample_node["name"].as<std::string>(),
-                                              &pcm_data[0], pcm_data.size(),
-                                              sample_node["pitch-offset"].as<float>()});
-      }
-      std::vector<std::pair<NoteDef, NoteDef>> assignments{};
-      for (const auto& ass_node : node["sample-assignments"])
-      {
-        NoteDef begin{Note::C, 0};
-        NoteDef end{Note::B, 7};
-        if (ass_node["begin"].IsDefined())
-        {
-          begin = NoteDef::from_string(ass_node["begin"].as<std::string>());
-        }
-        if (ass_node["end"].IsDefined())
-        {
-          end = NoteDef::from_string(ass_node["end"].as<std::string>());
-        }
-        assignments.emplace_back(std::make_pair(begin, end));
-      }
-      instruments.back()->set_sample_assignments(std::move(assignments));
+      instruments.emplace_back(Instrument::load_from_yaml(node));
     }
+  }
+
+  void Project::save() const
+  {
+    auto rootnode = YAML::Node{};
+    rootnode["project"]["title"] = title;
+    for (const auto& instr : instruments)
+    {
+      rootnode["project"]["instruments"].push_back(instr->get_as_yaml());
+    }
+
+    std::ofstream fout(project_filename);
+    fout << rootnode;
+  }
+
+  void Project::save_as(const std::filesystem::path& filename)
+  {
+    project_filename = filename;
+    save();
   }
 
   void Project::add_instrument(Instrument instr)

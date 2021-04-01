@@ -18,6 +18,8 @@ namespace mt {
     ~Project();
 
     void load_from_file(const std::filesystem::path& filename);
+    void save() const;
+    void save_as(const std::filesystem::path& filename);
 
     void add_instrument(Instrument instr);
     void remove_instrument(std::size_t idx);
@@ -29,7 +31,7 @@ namespace mt {
 
   private:
     std::string title;
-    std::string project_filename;
+    std::filesystem::path project_filename;
     std::vector<std::unique_ptr<Instrument>> instruments;
   };
 

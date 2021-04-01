@@ -1,10 +1,14 @@
 #include "sample.h"
 
-#include "audio_data_presenter.h"
+#include "mtlib/audio_data_presenter.h"
 #include "mtlib/sample_data_iterator.h"
+#include "mtlib/wav_file_format.h"
+#include "base64/decode.h"
+#include "base64/encode.h"
 #include <cstdint>
 #include <spdlog/spdlog.h>
 #include <SFML/Audio/Sound.hpp>
+#include <yaml-cpp/yaml.h>
 
 namespace mt {
 
@@ -55,6 +59,29 @@ namespace mt {
                                                                  channel},
                         sample_data_iterator<const std::int16_t>{});
     }
+  }
+
+  YAML::Node Sample::get_as_yaml() const
+  {
+    YAML::Node node{};
+    node["name"] = this->sample_name;
+    node["pitch-offset"] = this->pitch_offset;
+    WavFileFormat wff{this->sound_buffer};
+    node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
+
+    return node;
+  }
+
+  Sample Sample::load_from_yaml(const YAML::Node& node)
+  {
+    auto b64data = node["pcm-data"].as<std::string>();
+    std::vector<unsigned char> pcm_data;
+    pcm_data.resize(b64::data_size(b64data.c_str()), 0);
+    b64::decode(b64data.c_str(),
+                &pcm_data[0], pcm_data.size());
+    return Sample{node["name"].as<std::string>(),
+                  &pcm_data[0], pcm_data.size(),
+                  node["pitch-offset"].as<float>()};
   }
 
 }  // namespace mt

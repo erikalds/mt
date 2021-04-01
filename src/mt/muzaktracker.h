@@ -36,6 +36,7 @@ private:
   void create_menubar();
 
   void open_project(const std::filesystem::path& filename);
+  void save_project_as(const std::filesystem::path& filename);
   void set_current_project(std::unique_ptr<mt::Project> p);
 
   std::unique_ptr<digg::MainWindow> main_window;

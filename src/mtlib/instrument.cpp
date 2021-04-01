@@ -4,6 +4,7 @@
 #include "mtlib/note.h"
 #include <SFML/Audio/Sound.hpp>
 #include <spdlog/spdlog.h>
+#include <yaml-cpp/yaml.h>
 #include <cassert>
 #include <thread>
 
@@ -65,6 +66,65 @@ namespace mt {
     }
 
     return nullptr;
+  }
+
+  YAML::Node Instrument::get_as_yaml() const
+  {
+    YAML::Node node{};
+    node["name"] = instr_name;
+    for (const auto& sample : this->samples)
+    {
+      node["samples"].push_back(sample.get_as_yaml());
+    }
+
+    NoteDef implicit_begin{Note::C, 0};
+    NoteDef implicit_end{Note::B, 7};
+    for (const auto& ass : this->sample_lut)
+    {
+      if (ass.first == implicit_begin
+          && ass.second == implicit_end)
+      {
+        continue;
+      }
+      YAML::Node ass_node{};
+      if (ass.first != implicit_begin)
+      {
+        ass_node["begin"] = to_string(ass.first);
+      }
+      if (ass.second != implicit_end)
+      {
+        ass_node["end"] = to_string(ass.second);
+      }
+      node["sample-assignments"].push_back(ass_node);
+    }
+    return node;
+  }
+
+  std::unique_ptr<Instrument> Instrument::load_from_yaml(const YAML::Node& node)
+  {
+    spdlog::debug("Loading instrument: {}", node["name"].as<std::string>());
+    auto instr = std::make_unique<Instrument>(node["name"].as<std::string>());
+    for (const auto& sample_node : node["samples"])
+    {
+      instr->add_sample(Sample::load_from_yaml(sample_node));
+    }
+    std::vector<std::pair<NoteDef, NoteDef>> assignments{};
+    for (const auto& ass_node : node["sample-assignments"])
+    {
+      NoteDef begin{Note::C, 0};
+      NoteDef end{Note::B, 7};
+      if (ass_node["begin"].IsDefined())
+      {
+        begin = NoteDef::from_string(ass_node["begin"].as<std::string>());
+      }
+      if (ass_node["end"].IsDefined())
+      {
+        end = NoteDef::from_string(ass_node["end"].as<std::string>());
+      }
+      assignments.emplace_back(std::make_pair(begin, end));
+    }
+    instr->set_sample_assignments(std::move(assignments));
+    return instr;
   }
 
   void Instrument::set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass)

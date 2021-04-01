@@ -8,6 +8,7 @@
 #include <string>
 
 namespace sf { class Sound; }
+namespace YAML { class Node; }
 
 namespace mt {
 
@@ -28,6 +29,9 @@ namespace mt {
     float get_pitch_offset() const { return pitch_offset; }
 
     void present_audio_data(AudioDataPresenter& p) const;
+
+    YAML::Node get_as_yaml() const;
+    [[nodiscard]] static Sample load_from_yaml(const YAML::Node& node);
 
   private:
     sf::SoundBuffer sound_buffer;

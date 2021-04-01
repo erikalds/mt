@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace sf { class Sound; }
+namespace YAML { class Node; }
 
 namespace mt {
 
@@ -30,6 +31,9 @@ namespace mt {
     [[nodiscard]] std::size_t sample_count() const;
     [[nodiscard]] const Sample* sample(std::size_t idx) const;
     [[nodiscard]] Sample* sample(std::size_t idx);
+
+    [[nodiscard]] YAML::Node get_as_yaml() const;
+    [[nodiscard]] static std::unique_ptr<Instrument> load_from_yaml(const YAML::Node& node);
 
     void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);
 
