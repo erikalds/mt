@@ -21,7 +21,7 @@ namespace digg
     window->setFramerateLimit(60);
     ImGui::SFML::Init(*window);
 
-    widgets.push_back(&menubar);
+    widgets.insert(&menubar);
   }
 
   MainWindow::MainWindow(MainWindow&&) noexcept = default;
@@ -35,7 +35,7 @@ namespace digg
 
   void MainWindow::add_widget(Widget& w)
   {
-    widgets.push_back(&w);
+    widgets.insert(&w);
   }
 
   void MainWindow::remove_widget(Widget& w)
@@ -121,9 +121,15 @@ namespace digg
       r->update(delta_time);
     }
 
-    for (auto* w : widgets)
+    // Widget::process might add to/remove from widgets which may
+    // invalidate iterators
+    auto widgets_copy{widgets};
+    for (auto* w : widgets_copy)
     {
-      w->process();
+      if (widgets.count(w) > 0)
+      {
+        w->process();
+      }
     }
   }
 

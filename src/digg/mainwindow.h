@@ -3,6 +3,7 @@
 
 #include "mainmenubar.h"
 #include <SFML/Graphics/View.hpp>
+#include <set>
 #include <string>
 #include <memory>
 #include <vector>
@@ -47,7 +48,7 @@ namespace digg
     std::unique_ptr<sf::RenderWindow> window;
     std::unique_ptr<EventProcessor> ep;
     MainMenuBar menubar;
-    std::vector<Widget*> widgets;
+    std::set<Widget*> widgets;
     std::vector<Renderable*> renderables;
     sf::View world_view_;
     std::string title;
