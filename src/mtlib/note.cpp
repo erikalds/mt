@@ -67,7 +67,12 @@ namespace mt
     const std::regex rx{"([A-G][#\\-])([0-7])"};
     svmatch mo;
 
-    assert(regex_match(s, mo, rx));
+    if (!regex_match(s, mo, rx))
+    {
+      throw std::logic_error{"Unable to match NoteDef string def.: "
+                               + std::string{s}};
+    }
+
     auto notestr = get_sv(mo[1]);
     int n = (static_cast<int>(notestr[0]) - static_cast<int>('C')) * 2;
     constexpr const int notecount{12};
