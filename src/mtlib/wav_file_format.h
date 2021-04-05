@@ -1,10 +1,10 @@
 #ifndef WAV_FILE_FORMAT_H
 #define WAV_FILE_FORMAT_H
 
+#include <bits/c++config.h>
+#include <cstdint>
 #include <string_view>
 #include <vector>
-
-namespace sf { class SoundBuffer; }
 
 namespace mt
 {
@@ -12,7 +12,8 @@ namespace mt
   class WavFileFormat
   {
   public:
-    explicit WavFileFormat(const sf::SoundBuffer& sb);
+    WavFileFormat(const std::int16_t* samples, std::uint32_t sample_count,
+                  std::uint16_t channel_count, std::uint32_t sample_rate);
 
     explicit operator const void*() const { return &data[0]; }
     [[nodiscard]] std::size_t size() const { return data.size(); }

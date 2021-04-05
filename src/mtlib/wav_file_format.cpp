@@ -1,14 +1,18 @@
 #include "wav_file_format.h"
 
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <cassert>
 #include <cstdint>
 
 namespace mt {
 
+  constexpr static const auto hdrsize = 44U;
+
   // sf::SoundBuffer only supports 16-bit samples
-  WavFileFormat::WavFileFormat(const sf::SoundBuffer& sb) :
-    data(44 + sb.getSampleCount() * 2, 0)
+  WavFileFormat::WavFileFormat(const std::int16_t* samples,
+                               std::uint32_t sample_count,
+                               std::uint16_t channel_count,
+                               std::uint32_t sample_rate) :
+    data(hdrsize + sample_count * 2, 0)
   {
     std::size_t pos{0};
     this->write_at_pos(pos, "RIFF"); // main chunk ID
@@ -20,9 +24,7 @@ namespace mt {
     const std::uint32_t format_chunk_size{16};
     this->write_at_pos(pos, format_chunk_size);
     this->write_at_pos(pos, static_cast<std::uint16_t>(1)); // format (PCM)
-    const auto channel_count{static_cast<std::uint16_t>(sb.getChannelCount())};
     this->write_at_pos(pos, channel_count);
-    const std::uint32_t sample_rate = sb.getSampleRate();
     this->write_at_pos(pos, sample_rate);
     const std::uint16_t bytes_per_sample{2};
     const std::uint32_t byte_rate{sample_rate * channel_count * bytes_per_sample};
@@ -33,13 +35,11 @@ namespace mt {
     this->write_at_pos(pos, bits_per_sample);
     this->write_at_pos(pos, "data");
 
-    assert(sb.getSampleCount() < std::numeric_limits<std::uint32_t>::max());
-    auto sample_count = static_cast<std::uint32_t>(sb.getSampleCount());
     this->write_at_pos(pos, sample_count * bytes_per_sample);
 
     for(std::size_t i = 0; i < sample_count; ++i)
     {
-      this->write_at_pos(pos, sb.getSamples()[i]);
+      this->write_at_pos(pos, samples[i]);
     }
  }
 

@@ -1,7 +1,6 @@
 #include "mtlib/wav_file_format.h"
 
 #include <catch2/catch.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <cstdint>
 
 #include <iostream>
@@ -9,12 +8,10 @@
 
 TEST_CASE("one_waveform", "[wav]")
 {
-  sf::SoundBuffer sb{};
   std::array<std::int16_t, 8> samples{ 0, 500, 1000, 500, 0, -500, -1000, -500 };
   const std::uint16_t channelCount{1};
   const std::uint32_t sampleRate{44100};
-  sb.loadFromSamples(&samples[0], samples.size(), channelCount, sampleRate);
-  mt::WavFileFormat wff{sb};
+  mt::WavFileFormat wff{&samples[0], samples.size(), channelCount, sampleRate};
   const auto* data = static_cast<const void*>(wff);
   const auto* cdata = static_cast<const char*>(data);
   const auto* u16data = static_cast<const std::uint16_t*>(data);
@@ -44,12 +41,10 @@ TEST_CASE("one_waveform", "[wav]")
 
 TEST_CASE("another_waveform", "[wav]")
 {
-  sf::SoundBuffer sb{};
   std::array<std::int16_t, 8> samples{ 0, 16000, 32000, 16000, 0, -16000, -32000, -16000 };
   const std::uint16_t channelCount{1};
   const std::uint32_t sampleRate{44100};
-  sb.loadFromSamples(&samples[0], samples.size(), channelCount, sampleRate);
-  mt::WavFileFormat wff{sb};
+  mt::WavFileFormat wff{&samples[0], samples.size(), channelCount, sampleRate};
   const auto* data = static_cast<const void*>(wff);
   const auto* cdata = static_cast<const char*>(data);
   const auto* u16data = static_cast<const std::uint16_t*>(data);
@@ -79,13 +74,11 @@ TEST_CASE("another_waveform", "[wav]")
 
 TEST_CASE("longer_waveform", "[wav]")
 {
-  sf::SoundBuffer sb{};
   std::array<std::int16_t, 16> samples{ 0, 16000, 32000, 16000, 0, -16000, -32000, -16000,
                                         0, 16000, 32000, 16000, 0, -16000, -32000, -16000 };
   const std::uint16_t channelCount{1};
   const std::uint32_t sampleRate{44100};
-  sb.loadFromSamples(&samples[0], samples.size(), channelCount, sampleRate);
-  mt::WavFileFormat wff{sb};
+  mt::WavFileFormat wff{&samples[0], samples.size(), channelCount, sampleRate};
   const auto* data = static_cast<const void*>(wff);
   const auto* cdata = static_cast<const char*>(data);
   const auto* u16data = static_cast<const std::uint16_t*>(data);
@@ -115,14 +108,12 @@ TEST_CASE("longer_waveform", "[wav]")
 
 TEST_CASE("stereo_sample", "[wav]")
 {
-  sf::SoundBuffer sb{};
   std::array<std::int16_t, 16> samples{ 0, 0, 16000, 16000, 32000, 32000,
                                         16000, 16000, 0, 0, -16000, -16000,
                                         -32000, -32000, -16000, -16000 };
   const std::uint16_t channelCount{2};
   const std::uint32_t sampleRate{44100};
-  sb.loadFromSamples(&samples[0], samples.size(), channelCount, sampleRate);
-  mt::WavFileFormat wff{sb};
+  mt::WavFileFormat wff{&samples[0], samples.size(), channelCount, sampleRate};
   const auto* data = static_cast<const void*>(wff);
   const auto* cdata = static_cast<const char*>(data);
   const auto* u16data = static_cast<const std::uint16_t*>(data);
@@ -152,14 +143,12 @@ TEST_CASE("stereo_sample", "[wav]")
 
 TEST_CASE("different_sample_rate", "[wav]")
 {
-  sf::SoundBuffer sb{};
   std::array<std::int16_t, 16> samples{ 0, 0, 16000, 16000, 32000, 32000,
                                         16000, 16000, 0, 0, -16000, -16000,
                                         -32000, -32000, -16000, -16000 };
   const std::uint16_t channelCount{2};
   const std::uint32_t sampleRate{22050};
-  sb.loadFromSamples(&samples[0], samples.size(), channelCount, sampleRate);
-  mt::WavFileFormat wff{sb};
+  mt::WavFileFormat wff{&samples[0], samples.size(), channelCount, sampleRate};
   const auto* data = static_cast<const void*>(wff);
   const auto* cdata = static_cast<const char*>(data);
   const auto* u16data = static_cast<const std::uint16_t*>(data);

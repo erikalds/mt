@@ -66,7 +66,14 @@ namespace mt {
     YAML::Node node{};
     node["name"] = this->sample_name;
     node["pitch-offset"] = this->pitch_offset;
-    WavFileFormat wff{this->sound_buffer};
+
+    assert(this->sound_buffer.getSampleCount() < std::numeric_limits<std::uint32_t>::max());
+    assert(this->sound_buffer.getChannelCount() < std::numeric_limits<std::uint16_t>::max());
+    assert(this->sound_buffer.getSampleRate() < std::numeric_limits<std::uint32_t>::max());
+    auto sc = static_cast<std::uint32_t>(this->sound_buffer.getSampleCount());
+    auto cc = static_cast<std::uint16_t>(this->sound_buffer.getChannelCount());
+    auto sr = static_cast<std::uint32_t>(this->sound_buffer.getSampleRate());
+    WavFileFormat wff{this->sound_buffer.getSamples(), sc, cc, sr};
     node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
 
     return node;
