@@ -73,6 +73,7 @@ jobs:
 
     - name: Archive test result reports
       uses: actions/upload-artifact@v2
+      if: always() # make sure the reports are uploaded even if (especially if) the tests fail
       with:
         name: test
         path: ${{runner.workspace}}/build/test/**/*.xml
