@@ -27,7 +27,9 @@ namespace mt {
     [[nodiscard]] Instrument* get_instrument(std::size_t idx);
     [[nodiscard]] const Instrument* get_instrument(std::size_t idx) const;
     [[nodiscard]] std::size_t instrument_count() const;
+
     [[nodiscard]] std::string_view get_title() const { return title; }
+    [[nodiscard]] std::filesystem::path get_filename() const { return project_filename; }
 
   private:
     std::string title;

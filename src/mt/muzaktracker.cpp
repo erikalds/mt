@@ -177,5 +177,6 @@ void MuzakTracker::set_current_project(std::unique_ptr<mt::Project> p)
   project = std::move(p);
 
   instrument_list->set_current_project(*project);
-  main_window->set_subtitle(project->get_title());
+  main_window->set_subtitle(std::string{project->get_title()}
+                            + " [" + project->get_filename().string() + "]");
 }
