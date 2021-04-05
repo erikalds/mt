@@ -3,6 +3,7 @@
 #include "instrument_editor.h"
 #include "instrument_list.h"
 #include "keyboard.h"
+#include "mtlib/config.h"
 #include "mtlib/project.h"
 
 #include "digg/action.h"
@@ -13,12 +14,15 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <spdlog/spdlog.h>
 
-MuzakTracker::MuzakTracker() :
+MuzakTracker::MuzakTracker(mt::Config& cfg) :
   main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")},
   keyboard{std::make_unique<Keyboard>()},
   instrument_list{std::make_unique<InstrumentList>()},
-  instrument_editor{std::make_unique<InstrumentEditor>()}
+  instrument_editor{std::make_unique<InstrumentEditor>()},
+  config{cfg}
 {
+  main_window->set_size(config.get_window_size());
+
   set_current_project(std::make_unique<mt::Project>());
   instrument_list->add_selection_listener(*keyboard);
   instrument_list->add_selection_listener(*instrument_editor);
@@ -32,7 +36,10 @@ MuzakTracker::MuzakTracker() :
   create_menubar();
 }
 
-MuzakTracker::~MuzakTracker() = default;
+MuzakTracker::~MuzakTracker()
+{
+  config.set_window_size(main_window->get_size());
+}
 
 int MuzakTracker::run()
 {

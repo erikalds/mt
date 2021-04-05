@@ -40,6 +40,9 @@ namespace digg
     sf::View& world_view() { return world_view_; }
     void set_subtitle(std::string_view st);
 
+    void set_size(const std::pair<std::size_t, std::size_t>& size);
+    [[nodiscard]] std::pair<std::size_t, std::size_t> get_size() const;
+
   private:
     void process_events();
     void update_objects(const sf::Time& delta_time);

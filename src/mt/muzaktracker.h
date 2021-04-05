@@ -12,7 +12,10 @@ namespace digg
   class MainWindow;
 }  // namespace digg
 
-namespace mt { class Project; }
+namespace mt {
+  class Config;
+  class Project;
+}
 
 class InstrumentEditor;
 class InstrumentList;
@@ -21,7 +24,7 @@ class Keyboard;
 class MuzakTracker
 {
 public:
-  MuzakTracker();
+  explicit MuzakTracker(mt::Config& cfg);
   MuzakTracker(const MuzakTracker&) = delete;
   MuzakTracker& operator=(const MuzakTracker&) = delete;
   MuzakTracker(MuzakTracker&&) = delete;
@@ -47,6 +50,7 @@ private:
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;
   std::unique_ptr<digg::FileDialog> file_dialog;
+  mt::Config& config;
 };
 
 #endif /* MUZAKTRACKER_H */

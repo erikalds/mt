@@ -1,4 +1,5 @@
 #include "muzaktracker.h"
+#include "mtlib/config.h"
 #include "digg/sentry.h"
 
 #include <docopt/docopt.h>
@@ -42,7 +43,8 @@ int main(int argc, const char* argv[])
                 SFML_VERSION_PATCH);
   spdlog::debug("ImGui version {}", IMGUI_VERSION);
 
-  MuzakTracker mt;
+  mt::Config config{};
+  MuzakTracker mt{config};
   if (args["<mzt-file>"])
   {
     mt.load_project(args["<mzt-file>"].asString());

@@ -88,6 +88,18 @@ namespace digg
     }
   }
 
+  void MainWindow::set_size(const std::pair<std::size_t, std::size_t>& size)
+  {
+    window->setSize(sf::Vector2u{static_cast<unsigned int>(size.first),
+                                 static_cast<unsigned int>(size.second)});
+  }
+
+  std::pair<std::size_t, std::size_t> MainWindow::get_size() const
+  {
+    auto v2u = window->getSize();
+    return std::make_pair(v2u.x, v2u.y);
+  }
+
   void MainWindow::process_events()
   {
     sf::Event event{};
