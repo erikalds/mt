@@ -6,6 +6,8 @@ add_library(mtlib STATIC
   instrument.h
   note.cpp
   note.h
+  pattern.cpp
+  pattern.h
   project.cpp
   project.h
   sample.cpp

@@ -2,6 +2,7 @@
 
 #include "mtlib/instrument.h"
 #include "mtlib/note.h"
+#include "mtlib/pattern.h"
 #include "mtlib/sample.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
@@ -15,6 +16,7 @@ namespace mt {
   Project::Project() :
     title{"untitled"}
   {
+    patterns.emplace_back(std::make_unique<Pattern>(0x40, 8)); // for testing
   }
 
   Project::~Project() = default;
@@ -87,6 +89,16 @@ namespace mt {
   std::size_t Project::instrument_count() const
   {
     return instruments.size();
+  }
+
+  [[nodiscard]] const Pattern& Project::get_pattern(std::size_t idx) const
+  {
+    return *patterns[idx];
+  }
+
+  [[nodiscard]] Pattern& Project::get_pattern(std::size_t idx)
+  {
+    return *patterns[idx];
   }
 
 }  // namespace mt

@@ -1,5 +1,6 @@
 add_executable(mtlib_tests
   note_test.cpp
+  pattern_test.cpp
   sample_data_iterator_test.cpp
   wav_file_format_test.cpp)
 

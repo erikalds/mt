@@ -3,6 +3,7 @@
 #include "instrument_editor.h"
 #include "instrument_list.h"
 #include "keyboard.h"
+#include "pattern_view.h"
 #include "mtlib/config.h"
 #include "mtlib/project.h"
 
@@ -19,6 +20,7 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   keyboard{std::make_unique<Keyboard>()},
   instrument_list{std::make_unique<InstrumentList>()},
   instrument_editor{std::make_unique<InstrumentEditor>()},
+  pattern_view{std::make_unique<PatternView>()},
   config{cfg}
 {
   main_window->set_size(config.get_window_size());
@@ -30,7 +32,9 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   main_window->add_widget(*keyboard);
   main_window->add_widget(*instrument_list);
   main_window->add_widget(*instrument_editor);
+  main_window->add_widget(*pattern_view);
   main_window->get_eventprocessor().add_eventlistener(*keyboard);
+  main_window->get_eventprocessor().add_eventlistener(*pattern_view);
 
   create_actions();
   create_menubar();
@@ -114,6 +118,13 @@ void MuzakTracker::create_actions()
                                      main_window->close();
                                    },
                                    Action::shortcut(sf::Keyboard::Q, true, false)});
+  view_actions.emplace_back(Action{"Toggle pattern view",
+                                   [this]()
+                                   {
+                                     spdlog::info("Toggle pattern view");
+                                     pattern_view->toggle_active();
+                                   },
+                                   Action::shortcut(sf::Keyboard::F9, false, false)});
   view_actions.emplace_back(Action{"Toggle keyboard",
                                    [this]()
                                    {
@@ -177,6 +188,7 @@ void MuzakTracker::set_current_project(std::unique_ptr<mt::Project> p)
   project = std::move(p);
 
   instrument_list->set_current_project(*project);
+  pattern_view->display_pattern(project->get_pattern(0));
   main_window->set_subtitle(std::string{project->get_title()}
                             + " [" + project->get_filename().string() + "]");
 }
