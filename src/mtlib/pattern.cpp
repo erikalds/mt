@@ -43,9 +43,9 @@ namespace mt {
     std::string mods{};
     for (const auto& m : mod)
     {
-      mods += "\t" + to_str(m);
+      mods += " " + to_str(m);
     }
-    return to_str(note, stop) + "\t" + to_str(instr) + "\t" + to_str(volume) + mods;
+    return to_str(note, stop) + " " + to_str(instr) + " " + to_str(volume) + mods;
   }
 
 }  // namespace mt

@@ -17,7 +17,7 @@ TEST_CASE("Pattern_Track_containers", "[pattern]")
     CHECK(0x40 == std::distance(p0[i].begin(), p0[i].end()));
     for (auto j = 0u; j < p0[i].size(); ++j)
     {
-      CHECK("---\t--\t--\t----" == p0[i][j].represent());
+      CHECK("--- -- -- ----" == p0[i][j].represent());
     }
   }
   CHECK(12 == p1.size());
@@ -27,7 +27,7 @@ TEST_CASE("Pattern_Track_containers", "[pattern]")
     CHECK(0x60 == std::distance(track.begin(), track.end()));
     for (const auto& note_event : track)
     {
-      CHECK("---\t--\t--\t----" == note_event.represent());
+      CHECK("--- -- -- ----" == note_event.represent());
     }
   }
 }
@@ -38,20 +38,20 @@ TEST_CASE("NoteEvent_represent", "[pattern]")
   n0.note = mt::NoteDef{mt::Note::C, 5};
   n0.instr = 1;
   n0.volume = 0x80;
-  CHECK("C-5\t01\t80\t----" == n0.represent());
+  CHECK("C-5 01 80 ----" == n0.represent());
   n0.mod[0] = 0x9000;
-  CHECK("C-5\t01\t80\t9000" == n0.represent());
+  CHECK("C-5 01 80 9000" == n0.represent());
 
   mt::NoteEvent n1{2};
-  CHECK("---\t--\t--\t----\t----" == n1.represent());
+  CHECK("--- -- -- ---- ----" == n1.represent());
   n1.note = mt::NoteDef{mt::Note::D_sharp, 4};
   n1.instr = 0;
   n1.volume = 0xFF;
   n1.mod[0] = 0x80FF;
   n1.mod[1] = 0x1090;
-  CHECK("D#4\t00\tff\t80ff\t1090" == n1.represent());
+  CHECK("D#4 00 ff 80ff 1090" == n1.represent());
 
   mt::NoteEvent n2{1};
   n2.stop = true;
-  CHECK("===\t--\t--\t----" == n2.represent());
+  CHECK("=== -- -- ----" == n2.represent());
 }
