@@ -1,6 +1,7 @@
 #include "pattern_view.h"
 
 #include "mtlib/pattern.h"
+#include <SFML/Window/Keyboard.hpp>
 #include <fmt/core.h>
 #include <imgui.h>
 #include <spdlog/spdlog.h>
@@ -21,7 +22,7 @@ void PatternView::display_pattern(mt::Pattern& p)
   column_widths.clear();
   column_widths.reserve(N);
   column_widths.push_back(row_title_width);
-  const auto col_width{200};
+  const auto col_width{115};
   column_widths.insert(std::end(column_widths),
                        current_pattern->size(), col_width);
 
@@ -37,6 +38,27 @@ void PatternView::display_pattern(mt::Pattern& p)
     headers.push_back(header_strings.back().c_str());
   }
 }
+
+namespace {
+
+  /// Wrap value in range [0, end>.
+  template<typename T, typename U>
+  T wrap_pos(T value, U end)
+  {
+    if (value < 0)
+    {
+      return value + static_cast<T>(end);
+    }
+
+    if (value >= static_cast<T>(end))
+    {
+      return value - static_cast<T>(end);
+    }
+
+    return value;
+  }
+
+} // anonymous namespace
 
 void PatternView::event_occurred(const sf::Event& e)
 {
@@ -59,103 +81,39 @@ void PatternView::event_occurred(const sf::Event& e)
     }
     else if (e.key.code == sf::Keyboard::Left)
     {
-      --current_column;
+      --current_subcolumn;
     }
     else if (e.key.code == sf::Keyboard::Right)
     {
-      ++current_column;
+      ++current_subcolumn;
+    }
+    else if (e.key.code == sf::Keyboard::Tab)
+    {
+      if (e.key.shift == true)
+      {
+        --current_column;
+      }
+      else
+      {
+        ++current_column;
+      }
     }
     else
     {
       return;
     }
-    current_row = current_row % current_pattern->get_track_length();
-    current_column = current_column % current_pattern->size();
-    spdlog::debug("[Pattern] current column/row: {}/{}", current_column, current_row);
+    current_row = wrap_pos(current_row, current_pattern->get_track_length());
+    current_column = wrap_pos(current_column, current_pattern->size());
+    constexpr const auto subcol_count{9};
+    current_subcolumn = wrap_pos(current_subcolumn, subcol_count);
+    spdlog::debug("[Pattern] current column/row: {}[{}]/{}",
+                  current_column, current_subcolumn, current_row);
   }
   else if (e.type == sf::Event::KeyReleased)
   {
     spdlog::debug("[Pattern] key released: {}", e.key.code);
   }
 }
-
-
-// namespace ImGuiExt {
-
-//   int BeginTable(const char* columnsId, const char** headers, float* widths,
-//                  int count, bool draw_border)
-//   {
-//     if (count <= 0)
-//     {
-//       return 0;
-//     }
-
-//     // Draw column headers
-//     ImGuiStyle& style = ImGui::GetStyle();
-//     const ImVec2 firstTextSize = ImGui::CalcTextSize(headers[0], nullptr, true);
-
-//     ImGui::BeginChild(columnsId, ImVec2(0, firstTextSize.y + 2 * style.ItemSpacing.y), true,
-//                       ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-//     char str_id[256];
-//     sprintf(str_id, "tbl0_%s", columnsId);
-//     ImGui::Columns(count, str_id, draw_border);
-
-//     float offset = 0.0f;
-//     for(int i = 0; i < count; i++)
-//     {
-//       ImGui::SetColumnOffset(i, offset);
-
-//       if (widths[i] <= 0)
-//       {
-//         const ImVec2 textsize = ImGui::CalcTextSize(headers[i], nullptr, true);
-//         const float colSizeX = (textsize.x + 2 * style.ItemSpacing.x);
-//         widths[i] = colSizeX + 1;
-//       }
-
-//       offset += widths[i];
-
-//       // if (i < (count - 1))
-//       // {
-//       //   float curOffset = offset;
-//       //   offset = ImGui::GetColumnOffset(i + 1);
-//       //   widths[i] = offset - curOffset + 1;
-//       // }
-
-//       ImGui::SetColumnWidth(i, widths[i]);
-//       ImGui::TextUnformatted(headers[i]);
-//       ImGui::NextColumn();
-//     }
-
-//     ImGui::Columns(1);
-//     ImGui::EndChild();
-
-//     // Draw body
-//     str_id[3] = '1';
-//     columnsId = str_id;
-
-//     ImGui::BeginChild(columnsId, ImVec2(0,0), true);
-//     ImGui::Columns(count, columnsId, draw_border);
-
-//     offset = 0.0f;
-//     for(int i = 0; i < count; i++)
-//     {
-//       ImGui::SetColumnOffset(i, offset);
-//       ImGui::SetColumnWidth(i, widths[i]);
-//       offset += widths[i];// - 1;
-//     }
-
-//     return 1;
-//   }
-
-//   void EndTable()
-//   {
-//     ImGui::Columns(1);
-//     ImGui::EndChild();
-//   }
-
-// }
-
 
 void PatternView::draw_widgets()
 {
@@ -172,32 +130,11 @@ void PatternView::draw_widgets()
     }
     render_column(trackdata);
   }
-
-
-  // if (ImGuiExt::BeginTable("tracks", &headers[0], &column_widths[0],
-  //                          static_cast<int>(current_pattern->size() + 1), true) != 0)
-  // {
-
-  //   for (auto row = 0U; row < current_pattern->get_track_length(); ++row)
-  //   {
-  //     ImGui::Text("%.2x", row);
-  //     //spdlog::debug("Column {} has width: {}", ImGui::GetColumnIndex(), ImGui::GetColumnWidth(ImGui::GetColumnIndex()));
-  //     ImGui::NextColumn();
-  //     for (const auto& track : *current_pattern)
-  //     {
-  //       //spdlog::debug("Column {} has width: {}", ImGui::GetColumnIndex(), ImGui::GetColumnWidth(ImGui::GetColumnIndex()));
-  //       const auto repr = track[row].represent();
-  //       ImGui::TextUnformatted(repr.c_str());
-  //       ImGui::NextColumn();
-  //     }
-  //   }
-  // }
-  // ImGuiExt::EndTable();
 }
 
 void PatternView::render_column_header(std::size_t length)
 {
-  for (auto i = 0U; i < length; ++i)
+  for (auto i = 0; i < static_cast<int>(length); ++i)
   {
     if (i > 0)
     {
@@ -212,10 +149,12 @@ void PatternView::render_column_header(std::size_t length)
     ost << "Pattern-header-" << i;
     const ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar
       | ImGuiWindowFlags_NoScrollWithMouse;
-    const ImVec2 childsize{column_widths[i], ImGui::GetTextLineHeight() * 2.0F};
+    const ImVec2 childsize{column_widths[static_cast<std::size_t>(i)],
+                           ImGui::GetTextLineHeight() * 2.0F};
     if (ImGui::BeginChild(ost.str().c_str(), childsize, true, flags))
     {
-      ImGui::TextColored(ImVec4(1.0F, 1.0F, 1.0F, 1.0F), "%s", headers[i]);
+      ImGui::TextColored(ImVec4(1.0F, 1.0F, 1.0F, 1.0F), "%s",
+                         headers[static_cast<std::size_t>(i)]);
     }
     ImGui::EndChild();
   }
@@ -242,19 +181,19 @@ void PatternView::render_column(const std::vector<std::string>& data)
   if (column - 1 == current_column)
   {
     ImGui::SetScrollHereX();
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, 0x80444444);
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, 0x40444444);
   }
   else
   {
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, 0x80222222);
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, 0x40222222);
   }
 
   std::ostringstream ost;
   ost << "Track-" << column;
-  const ImVec2 childsize{column_widths[column], 0};
+  const ImVec2 childsize{column_widths[static_cast<std::size_t>(column)], 0};
   if (ImGui::BeginChild(ost.str().c_str(), childsize, true, flags))
   {
-    auto row = 0U;
+    auto row = 0;
     for (const auto& elem : data)
     {
       static const auto fgcolor = ImVec4(0.9F, 0.9F, 1.0, 1.0);
@@ -266,6 +205,11 @@ void PatternView::render_column(const std::vector<std::string>& data)
       {
         ImGui::SetScrollHereY();
         color = fgcolor;
+
+        if ((column - 1) == current_column)
+        {
+          draw_cursor(elem);
+        }
       }
       ImGui::TextColored(color, "%s", elem.c_str());
       ++row;
@@ -274,4 +218,62 @@ void PatternView::render_column(const std::vector<std::string>& data)
   ImGui::EndChild();
   ImGui::PopStyleColor();
   ++column;
+}
+
+namespace {
+
+  std::size_t subcolumn_to_strpos(int subcol)
+  {
+    switch (subcol)
+    {
+    case 0:
+      return 3;
+    case 1:
+      return 4;
+    case 2:
+      return 5;
+    case 3:
+      return 7;
+    case 4:
+      return 8;
+    case 5:
+      return 10;
+    case 6:
+      return 11;
+    case 7:
+      return 12;
+    case 8:
+      return 13;
+    }
+
+    throw std::logic_error(fmt::format("subcol {} too high", subcol));
+  }
+
+} // anonymous namespace
+
+void PatternView::draw_cursor(const std::string& elem) const
+{
+  auto cursorpos = ImGui::GetCursorScreenPos();
+  auto textsize = ImGui::CalcTextSize(elem.c_str());
+  draw_rect(cursorpos, textsize, 0xffffffff);
+
+  auto strpos = subcolumn_to_strpos(current_subcolumn);
+  if (current_subcolumn == 0)
+  {
+    textsize = ImGui::CalcTextSize(elem.substr(0, strpos).c_str());
+  }
+  else
+  {
+    textsize = ImGui::CalcTextSize(elem.substr(strpos, 1).c_str());
+    cursorpos.x += ImGui::CalcTextSize(elem.substr(0, strpos).c_str()).x;
+  }
+  draw_rect(cursorpos, textsize, 0xffff0000);
+}
+
+void PatternView::draw_rect(const ImVec2& pos, const ImVec2& size,
+                            std::uint32_t color) const
+{
+  ImVec2 minpos{pos.x - 1, pos.y - 1};
+  ImVec2 maxpos{pos.x + size.x + 1, pos.y + size.y + 1};
+  ImGui::GetForegroundDrawList()->AddRect(minpos, maxpos, color);
 }

@@ -4,6 +4,8 @@
 #include "digg/subwindow.h"
 #include "digg/event_listener.h"
 
+struct ImVec2;
+
 namespace mt { class Pattern; }
 
 class PatternView : public digg::SubWindow,
@@ -23,15 +25,19 @@ private:
   void render_column_header(std::size_t length);
   void render_row_header(std::size_t length);
   void render_column(const std::vector<std::string>& data);
+  void draw_cursor(const std::string& elem) const;
+  void draw_rect(const ImVec2& pos, const ImVec2& size,
+                 std::uint32_t color) const;
 
   mt::Pattern* current_pattern = nullptr;
   std::vector<float> column_widths;
   std::vector<std::string> header_strings;
   std::vector<const char*> headers;
-  std::size_t current_column = 0;
-  std::size_t current_row = 0;
+  int current_column = 0;
+  int current_subcolumn = 0;
+  int current_row = 0;
 
-  std::size_t column;
+  int column;
 };
 
 #endif /* PATTERN_VIEW_H */
