@@ -219,8 +219,14 @@ bool PatternView::set_current_note_event(const sf::Event& e)
     auto opt_notedef = keyboard->get_note_from_event(e);
     if (!opt_notedef)
     {
+      if (e.key.code == sf::Keyboard::LControl)
+      {
+        (*current_pattern)[i][j].stop = true;
+        return true;
+      }
       return false;
     }
+    (*current_pattern)[i][j].stop = false;
     (*current_pattern)[i][j].note = *opt_notedef;
     (*current_pattern)[i][j].instr = current_instrument;
   }
