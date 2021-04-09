@@ -41,6 +41,13 @@ void PatternView::display_pattern(mt::Pattern& p)
   }
 }
 
+void PatternView::selected_instrument_changed(int instr_idx,
+                                              mt::Instrument* /*instr*/,
+                                              mt::Sample* /*sample*/)
+{
+  current_instrument = instr_idx;
+}
+
 namespace {
 
   /// Wrap value in range [0, end>.
@@ -145,6 +152,7 @@ bool PatternView::set_current_note_event(const sf::Event& e)
     auto i = static_cast<std::size_t>(current_column);
     auto j = static_cast<std::size_t>(current_row);
     (*current_pattern)[i][j].note = *opt_notedef;
+    (*current_pattern)[i][j].instr = current_instrument;
   }
   return true;
 }

@@ -11,7 +11,8 @@ class InstrumentSelectionListener
 public:
   virtual ~InstrumentSelectionListener() = 0;
 
-  virtual void selected_instrument_changed(mt::Instrument* instr, mt::Sample* sample) = 0;
+  virtual void selected_instrument_changed(int instr_idx, mt::Instrument* instr,
+                                           mt::Sample* sample) = 0;
 };
 
 inline InstrumentSelectionListener::~InstrumentSelectionListener() = default;

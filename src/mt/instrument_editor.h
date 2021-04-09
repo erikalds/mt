@@ -11,7 +11,8 @@ class InstrumentEditor : public digg::SubWindow,
 public:
   InstrumentEditor();
 
-  void selected_instrument_changed(mt::Instrument* i, mt::Sample* s) override;
+  void selected_instrument_changed(int instr_idx, mt::Instrument* i,
+                                   mt::Sample* s) override;
 
   void draw_widgets() override;
 

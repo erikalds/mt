@@ -11,7 +11,9 @@ InstrumentEditor::InstrumentEditor() :
 {
 }
 
-void InstrumentEditor::selected_instrument_changed(mt::Instrument* i, mt::Sample* s)
+void InstrumentEditor::selected_instrument_changed(int /*instr_idx*/,
+                                                   mt::Instrument* i,
+                                                   mt::Sample* s)
 {
   instrument = i;
   if (s != nullptr && s != sample)

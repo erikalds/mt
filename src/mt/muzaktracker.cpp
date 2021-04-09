@@ -28,6 +28,7 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   set_current_project(std::make_unique<mt::Project>());
   instrument_list->add_selection_listener(*keyboard);
   instrument_list->add_selection_listener(*instrument_editor);
+  instrument_list->add_selection_listener(*pattern_view);
 
   pattern_view->set_keyboard(*keyboard);
 

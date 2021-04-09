@@ -24,7 +24,8 @@ public:
   [[nodiscard]] std::optional<mt::NoteDef> get_note_from_event(const sf::Event& e) const;
 
   void set_current_instrument(mt::Instrument* instr);
-  void selected_instrument_changed(mt::Instrument* instr, mt::Sample*) override
+  void selected_instrument_changed(int /*instr_idx*/, mt::Instrument* instr,
+                                   mt::Sample* /*sample*/) override
   { set_current_instrument(instr); }
 
 private:

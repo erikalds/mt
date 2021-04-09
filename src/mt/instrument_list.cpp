@@ -153,7 +153,7 @@ void InstrumentList::remove_current_instrument()
 {
   for (auto* l : listeners)
   {
-    l->selected_instrument_changed(nullptr, nullptr);
+    l->selected_instrument_changed(0, nullptr, nullptr);
   }
   project->remove_instrument(static_cast<std::size_t>(current_instrument));
   current_instrument = std::max(0, std::min(current_instrument,
@@ -193,7 +193,7 @@ void InstrumentList::remove_current_sample()
 
   for (auto* l : listeners)
   {
-    l->selected_instrument_changed(instr, nullptr);
+    l->selected_instrument_changed(current_instrument, instr, nullptr);
   }
   instr->remove_sample(static_cast<std::size_t>(current_sample));
   current_sample = std::max(0, std::min(current_sample,
@@ -217,5 +217,5 @@ void InstrumentList::notify_listener(InstrumentSelectionListener& listener)
   {
     sample = instr->sample(static_cast<std::size_t>(current_sample));
   }
-  listener.selected_instrument_changed(instr, sample);
+  listener.selected_instrument_changed(current_instrument, instr, sample);
 }

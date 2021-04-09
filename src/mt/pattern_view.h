@@ -1,6 +1,7 @@
 #ifndef PATTERN_VIEW_H
 #define PATTERN_VIEW_H
 
+#include "mt/instrument_selection_listener.h"
 #include "digg/subwindow.h"
 #include "digg/event_listener.h"
 
@@ -11,13 +12,16 @@ class Keyboard;
 namespace mt { class Pattern; }
 
 class PatternView : public digg::SubWindow,
-                    public digg::EventListener
-
+                    public digg::EventListener,
+                    public InstrumentSelectionListener
 {
 public:
   PatternView();
 
   void display_pattern(mt::Pattern& p);
+
+  void selected_instrument_changed(int instr_idx, mt::Instrument* instr,
+                                   mt::Sample* sample) override;
 
   void set_keyboard(const Keyboard& k) { keyboard = &k; }
   void event_occurred(const sf::Event& e) override;
@@ -48,6 +52,7 @@ private:
 
   bool editing = false;
   const Keyboard* keyboard = nullptr;
+  int current_instrument = 0;
 };
 
 #endif /* PATTERN_VIEW_H */
