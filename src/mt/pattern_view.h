@@ -6,6 +6,8 @@
 
 struct ImVec2;
 
+class Keyboard;
+
 namespace mt { class Pattern; }
 
 class PatternView : public digg::SubWindow,
@@ -17,8 +19,13 @@ public:
 
   void display_pattern(mt::Pattern& p);
 
+  void set_keyboard(const Keyboard& k) { keyboard = &k; }
   void event_occurred(const sf::Event& e) override;
 
+private:
+  bool set_current_note_event(const sf::Event& e);
+
+public:
   void draw_widgets() override;
 
 private:
@@ -38,6 +45,9 @@ private:
   int current_row = 0;
 
   int column;
+
+  bool editing = false;
+  const Keyboard* keyboard = nullptr;
 };
 
 #endif /* PATTERN_VIEW_H */

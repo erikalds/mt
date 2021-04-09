@@ -5,6 +5,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <cassert>
 
 
 Keyboard::Keyboard() :
@@ -27,58 +28,62 @@ void Keyboard::event_occurred(const sf::Event& e)
     return;
   }
 
-  std::function<void(std::size_t, mt::Note)> action;
+  auto opt_notedef = get_note_from_event(e);
+  if (!opt_notedef)
+  {
+    return;
+  }
+
   if (e.type == sf::Event::KeyReleased)
   {
-    action = [this](std::size_t octave, mt::Note note)
-             {
-               current_instrument->stop(mt::NoteDef{note, octave});
-             };
+    current_instrument->stop(*opt_notedef);
   }
   else
   {
-    action = [this](std::size_t octave, mt::Note note)
-             {
-               current_instrument->play(mt::NoteDef{note, octave});
-             };
+    current_instrument->play(*opt_notedef);
   }
+}
 
+[[nodiscard]] std::optional<mt::NoteDef>
+Keyboard::get_note_from_event(const sf::Event& e) const
+{
+  assert(e.type == sf::Event::KeyPressed || e.type == sf::Event::KeyReleased);
   auto octave = 3u;
   switch (e.key.code)
   {
-  case sf::Keyboard::Z: return action(octave, mt::Note::C);
-  case sf::Keyboard::S: return action(octave, mt::Note::C_sharp);
-  case sf::Keyboard::X: return action(octave, mt::Note::D);
-  case sf::Keyboard::D: return action(octave, mt::Note::D_sharp);
-  case sf::Keyboard::C: return action(octave, mt::Note::E);
-  case sf::Keyboard::V: return action(octave, mt::Note::F);
-  case sf::Keyboard::G: return action(octave, mt::Note::F_sharp);
-  case sf::Keyboard::B: return action(octave, mt::Note::G);
-  case sf::Keyboard::H: return action(octave, mt::Note::G_sharp);
-  case sf::Keyboard::N: return action(octave, mt::Note::A);
-  case sf::Keyboard::J: return action(octave, mt::Note::A_sharp);
-  case sf::Keyboard::M: return action(octave, mt::Note::B);
-  case sf::Keyboard::Comma: return action(octave + 1, mt::Note::C);
-  case sf::Keyboard::L: return action(octave + 1, mt::Note::C_sharp);
-  case sf::Keyboard::Period: return action(octave + 1, mt::Note::D);
-  case sf::Keyboard::Q: return action(octave + 1, mt::Note::C);
-  case sf::Keyboard::Num2: return action(octave + 1, mt::Note::C_sharp);
-  case sf::Keyboard::W: return action(octave + 1, mt::Note::D);
-  case sf::Keyboard::Num3: return action(octave + 1, mt::Note::D_sharp);
-  case sf::Keyboard::E: return action(octave + 1, mt::Note::E);
-  case sf::Keyboard::R: return action(octave + 1, mt::Note::F);
-  case sf::Keyboard::Num5: return action(octave + 1, mt::Note::F_sharp);
-  case sf::Keyboard::T: return action(octave + 1, mt::Note::G);
-  case sf::Keyboard::Num6: return action(octave + 1, mt::Note::G_sharp);
-  case sf::Keyboard::Y: return action(octave + 1, mt::Note::A);
-  case sf::Keyboard::Num7: return action(octave + 1, mt::Note::A_sharp);
-  case sf::Keyboard::U: return action(octave + 1, mt::Note::B);
-  case sf::Keyboard::I: return action(octave + 2, mt::Note::C);
-  case sf::Keyboard::Num9: return action(octave + 2, mt::Note::C_sharp);
-  case sf::Keyboard::O: return action(octave + 2, mt::Note::D);
-  case sf::Keyboard::Num0: return action(octave + 2, mt::Note::D_sharp);
-  case sf::Keyboard::P: return action(octave + 2, mt::Note::E);
-  default: return;
+  case sf::Keyboard::Z: return mt::NoteDef{mt::Note::C, octave};
+  case sf::Keyboard::S: return mt::NoteDef{mt::Note::C_sharp, octave};
+  case sf::Keyboard::X: return mt::NoteDef{mt::Note::D, octave};
+  case sf::Keyboard::D: return mt::NoteDef{mt::Note::D_sharp, octave};
+  case sf::Keyboard::C: return mt::NoteDef{mt::Note::E, octave};
+  case sf::Keyboard::V: return mt::NoteDef{mt::Note::F, octave};
+  case sf::Keyboard::G: return mt::NoteDef{mt::Note::F_sharp, octave};
+  case sf::Keyboard::B: return mt::NoteDef{mt::Note::G, octave};
+  case sf::Keyboard::H: return mt::NoteDef{mt::Note::G_sharp, octave};
+  case sf::Keyboard::N: return mt::NoteDef{mt::Note::A, octave};
+  case sf::Keyboard::J: return mt::NoteDef{mt::Note::A_sharp, octave};
+  case sf::Keyboard::M: return mt::NoteDef{mt::Note::B, octave};
+  case sf::Keyboard::Comma: return mt::NoteDef{mt::Note::C, octave + 1};
+  case sf::Keyboard::L: return mt::NoteDef{mt::Note::C_sharp, octave + 1};
+  case sf::Keyboard::Period: return mt::NoteDef{mt::Note::D, octave + 1};
+  case sf::Keyboard::Q: return mt::NoteDef{mt::Note::C, octave + 1};
+  case sf::Keyboard::Num2: return mt::NoteDef{mt::Note::C_sharp, octave + 1};
+  case sf::Keyboard::W: return mt::NoteDef{mt::Note::D, octave + 1};
+  case sf::Keyboard::Num3: return mt::NoteDef{mt::Note::D_sharp, octave + 1};
+  case sf::Keyboard::E: return mt::NoteDef{mt::Note::E, octave + 1};
+  case sf::Keyboard::R: return mt::NoteDef{mt::Note::F, octave + 1};
+  case sf::Keyboard::Num5: return mt::NoteDef{mt::Note::F_sharp, octave + 1};
+  case sf::Keyboard::T: return mt::NoteDef{mt::Note::G, octave + 1};
+  case sf::Keyboard::Num6: return mt::NoteDef{mt::Note::G_sharp, octave + 1};
+  case sf::Keyboard::Y: return mt::NoteDef{mt::Note::A, octave + 1};
+  case sf::Keyboard::Num7: return mt::NoteDef{mt::Note::A_sharp, octave + 1};
+  case sf::Keyboard::U: return mt::NoteDef{mt::Note::B, octave + 1};
+  case sf::Keyboard::I: return mt::NoteDef{mt::Note::C, octave + 2};
+  case sf::Keyboard::Num9: return mt::NoteDef{mt::Note::C_sharp, octave + 2};
+  case sf::Keyboard::O: return mt::NoteDef{mt::Note::D, octave + 2};
+  case sf::Keyboard::Num0: return mt::NoteDef{mt::Note::D_sharp, octave + 2};
+  case sf::Keyboard::P: return mt::NoteDef{mt::Note::E, octave + 2};
+  default: return std::optional<mt::NoteDef>{};
   }
 }
 

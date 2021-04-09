@@ -29,6 +29,8 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   instrument_list->add_selection_listener(*keyboard);
   instrument_list->add_selection_listener(*instrument_editor);
 
+  pattern_view->set_keyboard(*keyboard);
+
   main_window->add_widget(*keyboard);
   main_window->add_widget(*instrument_list);
   main_window->add_widget(*instrument_editor);

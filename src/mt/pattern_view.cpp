@@ -1,8 +1,10 @@
 #include "pattern_view.h"
 
+#include "keyboard.h"
 #include "mtlib/pattern.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <fmt/core.h>
+#include <fmt/format.h>
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 #include <SFML/Window/Event.hpp>
@@ -98,10 +100,22 @@ void PatternView::event_occurred(const sf::Event& e)
         ++current_column;
       }
     }
+    else if (e.key.code == sf::Keyboard::Space)
+    {
+      editing = !editing;
+    }
+    else if (editing)
+    {
+      if (set_current_note_event(e))
+      {
+        ++current_row;
+      }
+    }
     else
     {
       return;
     }
+
     current_row = wrap_pos(current_row, current_pattern->get_track_length());
     current_column = wrap_pos(current_column, current_pattern->size());
     constexpr const auto subcol_count{9};
@@ -113,6 +127,26 @@ void PatternView::event_occurred(const sf::Event& e)
   {
     spdlog::debug("[Pattern] key released: {}", e.key.code);
   }
+}
+
+bool PatternView::set_current_note_event(const sf::Event& e)
+{
+  if (current_subcolumn == 0)
+  {
+    if (keyboard == nullptr)
+    {
+      return false;
+    }
+    auto opt_notedef = keyboard->get_note_from_event(e);
+    if (!opt_notedef)
+    {
+      return false;
+    }
+    auto i = static_cast<std::size_t>(current_column);
+    auto j = static_cast<std::size_t>(current_row);
+    (*current_pattern)[i][j].note = *opt_notedef;
+  }
+  return true;
 }
 
 void PatternView::draw_widgets()
@@ -153,8 +187,19 @@ void PatternView::render_column_header(std::size_t length)
                            ImGui::GetTextLineHeight() * 2.0F};
     if (ImGui::BeginChild(ost.str().c_str(), childsize, true, flags))
     {
-      ImGui::TextColored(ImVec4(1.0F, 1.0F, 1.0F, 1.0F), "%s",
-                         headers[static_cast<std::size_t>(i)]);
+      if (i == 0 && editing)
+      {
+        auto center = ImGui::GetCursorScreenPos();
+        center.x += childsize.x / 5;
+        center.y += childsize.y / 5;
+        float radius = (std::min(childsize.x, childsize.y) / 2) - 4;
+        ImGui::GetForegroundDrawList()->AddCircleFilled(center, radius, 0xFF0000FF);
+      }
+      else
+      {
+        ImGui::TextColored(ImVec4(1.0F, 1.0F, 1.0F, 1.0F), "%s",
+                           headers[static_cast<std::size_t>(i)]);
+      }
     }
     ImGui::EndChild();
   }
