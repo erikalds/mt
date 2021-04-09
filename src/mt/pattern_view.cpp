@@ -199,8 +199,26 @@ namespace {
     }
 
     constexpr const auto bitsperhalfbyte{4};
-    constexpr const auto mask{0xFU};
-    dest = origval | ((val & mask) << (offset * bitsperhalfbyte));
+    const auto mask{0xFU << (offset * bitsperhalfbyte)};
+    dest = (origval & ~mask) | (((val) << (offset * bitsperhalfbyte)) & mask);
+  }
+
+  template<typename T>
+  bool edit_field(std::optional<T>& field, std::size_t fieldcolumn, const sf::Event& e)
+  {
+    auto opt_hex_char = keycode_to_hex(e.key.code);
+    if (!opt_hex_char)
+    {
+      if (e.key.code == sf::Keyboard::Delete)
+      {
+        field = std::optional<T>{};
+        return true;
+      }
+      return false;
+    }
+    constexpr const auto maxcol{(sizeof(T) * 2) - 1};
+    update_optional(field, maxcol - fieldcolumn, *opt_hex_char);
+    return true;
   }
 
 } // anonymous namespace
@@ -236,58 +254,23 @@ bool PatternView::set_current_note_event(const sf::Event& e)
     (*current_pattern)[i][j].stop = false;
     (*current_pattern)[i][j].note = *opt_notedef;
     (*current_pattern)[i][j].instr = current_instrument;
+    return true;
   }
-  else
+
+  if (current_subcolumn < 3)
   {
-    if (current_subcolumn < 3)
-    {
-      auto opt_hex_char = keycode_to_hex(e.key.code);
-      if (!opt_hex_char)
-      {
-        if (e.key.code == sf::Keyboard::Delete)
-        {
-          (*current_pattern)[i][j].instr = std::optional<std::uint8_t>{};
-          return true;
-        }
-        return false;
-      }
-      const auto instrcol = (static_cast<std::size_t>(current_subcolumn) - 1U);
-      update_optional((*current_pattern)[i][j].instr, 1 - instrcol, *opt_hex_char);
-    }
-    else if (current_subcolumn < 5)
-    {
-      auto opt_hex_char = keycode_to_hex(e.key.code);
-      if (!opt_hex_char)
-      {
-        if (e.key.code == sf::Keyboard::Delete)
-        {
-          (*current_pattern)[i][j].volume = std::optional<std::uint8_t>{};
-          return true;
-        }
-        return false;
-      }
-      const auto volcol = (static_cast<std::size_t>(current_subcolumn) - 3U);
-      update_optional((*current_pattern)[i][j].volume, 1 - volcol, *opt_hex_char);
-    }
-    else
-    {
-      const auto modcol = current_subcolumn - 5;
-      const auto modidx = static_cast<std::size_t>(modcol / 4);
-      auto opt_hex_char = keycode_to_hex(e.key.code);
-      if (!opt_hex_char)
-      {
-        if (e.key.code == sf::Keyboard::Delete)
-        {
-          (*current_pattern)[i][j].mod[modidx] = std::optional<std::uint16_t>{};
-          return true;
-        }
-        return false;
-      }
-      update_optional((*current_pattern)[i][j].mod[modidx],
-                      3 - (modcol % 4), *opt_hex_char);
-    }
+    const auto instrcol = (static_cast<std::size_t>(current_subcolumn) - 1U);
+    return edit_field((*current_pattern)[i][j].instr, instrcol, e);
   }
-  return true;
+  if (current_subcolumn < 5)
+  {
+    const auto volcol = (static_cast<std::size_t>(current_subcolumn) - 3U);
+    return edit_field((*current_pattern)[i][j].volume, volcol, e);
+  }
+
+  const auto modcol = static_cast<std::size_t>(current_subcolumn) - 5U;
+  const auto modidx = modcol / 4;
+  return edit_field((*current_pattern)[i][j].mod[modidx], modcol % 4, e);
 }
 
 void PatternView::draw_widgets()
