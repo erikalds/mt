@@ -136,8 +136,80 @@ void PatternView::event_occurred(const sf::Event& e)
   }
 }
 
+namespace {
+
+  std::optional<std::uint32_t> keycode_to_hex(sf::Keyboard::Key keycode)
+  {
+    switch (keycode)
+    {
+    case sf::Keyboard::Num0:         ///< The 0 key
+    case sf::Keyboard::Numpad0:      ///< The numpad 0 key
+      return 0;
+    case sf::Keyboard::Num1:         ///< The 1 key
+    case sf::Keyboard::Numpad1:      ///< The numpad 1 key
+      return 1;
+    case sf::Keyboard::Num2:         ///< The 2 key
+    case sf::Keyboard::Numpad2:      ///< The numpad 2 key
+      return 2;
+    case sf::Keyboard::Num3:         ///< The 3 key
+    case sf::Keyboard::Numpad3:      ///< The numpad 3 key
+      return 3;
+    case sf::Keyboard::Num4:         ///< The 4 key
+    case sf::Keyboard::Numpad4:      ///< The numpad 4 key
+      return 4;
+    case sf::Keyboard::Num5:         ///< The 5 key
+    case sf::Keyboard::Numpad5:      ///< The numpad 5 key
+      return 5;
+    case sf::Keyboard::Num6:         ///< The 6 key
+    case sf::Keyboard::Numpad6:      ///< The numpad 6 key
+      return 6;
+    case sf::Keyboard::Num7:         ///< The 7 key
+    case sf::Keyboard::Numpad7:      ///< The numpad 7 key
+      return 7;
+    case sf::Keyboard::Num8:         ///< The 8 key
+    case sf::Keyboard::Numpad8:      ///< The numpad 8 key
+      return 8;
+    case sf::Keyboard::Num9:         ///< The 9 key
+    case sf::Keyboard::Numpad9:      ///< The numpad 9 key
+      return 9;
+    case sf::Keyboard::A:            ///< The A key
+      return 0xA;
+    case sf::Keyboard::B:            ///< The B key
+      return 0xB;
+    case sf::Keyboard::C:            ///< The C key
+      return 0xC;
+    case sf::Keyboard::D:            ///< The D key
+      return 0xD;
+    case sf::Keyboard::E:            ///< The E key
+      return 0xE;
+    case sf::Keyboard::F:            ///< The F key
+      return 0xF;
+    default:
+      return std::optional<std::uint32_t>{};
+    }
+  }
+
+  template<typename T, typename U>
+  void update_optional(std::optional<T>& dest, std::size_t offset, U val)
+  {
+    T origval = 0;
+    if (dest)
+    {
+      origval = *dest;
+    }
+
+    constexpr const auto bitsperhalfbyte{4};
+    constexpr const auto mask{0xFU};
+    dest = origval | ((val & mask) << (offset * bitsperhalfbyte));
+  }
+
+} // anonymous namespace
+
 bool PatternView::set_current_note_event(const sf::Event& e)
 {
+  const auto i = static_cast<std::size_t>(current_column);
+  const auto j = static_cast<std::size_t>(current_row);
+
   if (current_subcolumn == 0)
   {
     if (keyboard == nullptr)
@@ -149,10 +221,33 @@ bool PatternView::set_current_note_event(const sf::Event& e)
     {
       return false;
     }
-    auto i = static_cast<std::size_t>(current_column);
-    auto j = static_cast<std::size_t>(current_row);
     (*current_pattern)[i][j].note = *opt_notedef;
     (*current_pattern)[i][j].instr = current_instrument;
+  }
+  else
+  {
+    auto opt_hex_char = keycode_to_hex(e.key.code);
+    if (!opt_hex_char)
+    {
+      return false;
+    }
+    if (current_subcolumn < 3)
+    {
+      const auto instrcol = (static_cast<std::size_t>(current_subcolumn) - 1U);
+      update_optional((*current_pattern)[i][j].instr, 1 - instrcol, *opt_hex_char);
+    }
+    else if (current_subcolumn < 5)
+    {
+      const auto volcol = (static_cast<std::size_t>(current_subcolumn) - 3U);
+      update_optional((*current_pattern)[i][j].volume, 1 - volcol, *opt_hex_char);
+    }
+    else
+    {
+      const auto modcol = current_subcolumn - 5;
+      const auto modidx = static_cast<std::size_t>(modcol / 4);
+      update_optional((*current_pattern)[i][j].mod[modidx],
+                      3 - (modcol % 4), *opt_hex_char);
+    }
   }
   return true;
 }
