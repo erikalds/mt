@@ -224,6 +224,13 @@ bool PatternView::set_current_note_event(const sf::Event& e)
         (*current_pattern)[i][j].stop = true;
         return true;
       }
+      if (e.key.code == sf::Keyboard::Delete)
+      {
+        (*current_pattern)[i][j].stop = false;
+        (*current_pattern)[i][j].note = std::optional<mt::NoteDef>{};
+        (*current_pattern)[i][j].instr = std::optional<std::uint8_t>{};
+        return true;
+      }
       return false;
     }
     (*current_pattern)[i][j].stop = false;
@@ -232,18 +239,33 @@ bool PatternView::set_current_note_event(const sf::Event& e)
   }
   else
   {
-    auto opt_hex_char = keycode_to_hex(e.key.code);
-    if (!opt_hex_char)
-    {
-      return false;
-    }
     if (current_subcolumn < 3)
     {
+      auto opt_hex_char = keycode_to_hex(e.key.code);
+      if (!opt_hex_char)
+      {
+        if (e.key.code == sf::Keyboard::Delete)
+        {
+          (*current_pattern)[i][j].instr = std::optional<std::uint8_t>{};
+          return true;
+        }
+        return false;
+      }
       const auto instrcol = (static_cast<std::size_t>(current_subcolumn) - 1U);
       update_optional((*current_pattern)[i][j].instr, 1 - instrcol, *opt_hex_char);
     }
     else if (current_subcolumn < 5)
     {
+      auto opt_hex_char = keycode_to_hex(e.key.code);
+      if (!opt_hex_char)
+      {
+        if (e.key.code == sf::Keyboard::Delete)
+        {
+          (*current_pattern)[i][j].volume = std::optional<std::uint8_t>{};
+          return true;
+        }
+        return false;
+      }
       const auto volcol = (static_cast<std::size_t>(current_subcolumn) - 3U);
       update_optional((*current_pattern)[i][j].volume, 1 - volcol, *opt_hex_char);
     }
@@ -251,6 +273,16 @@ bool PatternView::set_current_note_event(const sf::Event& e)
     {
       const auto modcol = current_subcolumn - 5;
       const auto modidx = static_cast<std::size_t>(modcol / 4);
+      auto opt_hex_char = keycode_to_hex(e.key.code);
+      if (!opt_hex_char)
+      {
+        if (e.key.code == sf::Keyboard::Delete)
+        {
+          (*current_pattern)[i][j].mod[modidx] = std::optional<std::uint16_t>{};
+          return true;
+        }
+        return false;
+      }
       update_optional((*current_pattern)[i][j].mod[modidx],
                       3 - (modcol % 4), *opt_hex_char);
     }
