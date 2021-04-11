@@ -22,11 +22,30 @@ namespace mt {
     queue.insert(queue.begin() + pos + 1, *(queue.begin() + pos));
   }
 
+  void PatternQueue::remove_pattern_from_queue(const_iterator iter)
+  {
+    if (queue.size() == 1)
+    {
+      return;
+    }
+
+    const auto pos = static_cast<std::deque<std::size_t>::difference_type>(iter.pos);
+    queue.erase(queue.begin() + pos);
+  }
+
   void PatternQueue::increment_pattern_at(const_iterator iter)
   {
     if (++queue[iter.pos] >= patterns.size())
     {
       add_pattern();
+    }
+  }
+
+  void PatternQueue::decrement_pattern_at(const_iterator iter)
+  {
+    if (queue[iter.pos] > 0)
+    {
+      --queue[iter.pos];
     }
   }
 

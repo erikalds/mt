@@ -25,10 +25,20 @@ namespace mt {
     /// Appends pattern pointed to by iter at the position after iter.
     void append_duplicate_pattern(const_iterator iter);
 
+    /// Removes pattern from queue pointed to by iter.
+    ///
+    /// If iter points to the only pattern in queue, the pattern is not removed.
+    void remove_pattern_from_queue(const_iterator iter);
+
     /// Set next pattern idx at pattern pointed to by iter.
     ///
     /// If there is no such pattern, a pattern is created.
     void increment_pattern_at(const_iterator iter);
+
+    /// Set previous pattern idx at pattern pointed to by iter.
+    ///
+    /// If pattern idx is already at lowest (0), it stays at 0.
+    void decrement_pattern_at(const_iterator iter);
 
   private:
     void add_pattern();

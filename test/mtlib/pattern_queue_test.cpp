@@ -81,6 +81,38 @@ TEST_CASE("PatternQueue_append_duplicate_pattern", "[pattern]")
   CHECK(pq[2].name() == pq.at(3).name());
 }
 
+TEST_CASE("PatternQueue_remove_pattern_from_queue", "[pattern]")
+{
+  mt::PatternQueue pq;
+  auto iter = std::begin(pq);
+  pq.append_duplicate_pattern(iter);
+  ++iter;
+  pq.increment_pattern_at(iter);
+  pq.append_duplicate_pattern(iter);
+  ++iter;
+  pq.increment_pattern_at(iter);
+  pq.append_duplicate_pattern(iter);
+  // 0: 00, 1: 01, 2: 02, 3: 02
+  auto iter2 = ++std::begin(pq);
+  pq.remove_pattern_from_queue(iter2);
+  CHECK(3U == pq.size());
+  CHECK("00" == pq[0].name());
+  CHECK("02" == pq[1].name());
+  CHECK("02" == pq[2].name());
+  pq.remove_pattern_from_queue(iter2);
+  CHECK(2U == pq.size());
+  CHECK("00" == pq[0].name());
+  CHECK("02" == pq[1].name());
+  --iter2;
+  pq.remove_pattern_from_queue(iter2);
+  CHECK(1U == pq.size());
+  CHECK("02" == pq[0].name());
+  // cannot remove the only pattern of a pattern queue
+  pq.remove_pattern_from_queue(iter2);
+  CHECK(1U == pq.size());
+  CHECK("02" == pq[0].name());
+}
+
 TEST_CASE("PatternQueue_increment_pattern_at", "[pattern]")
 {
   mt::PatternQueue pq;
@@ -93,6 +125,36 @@ TEST_CASE("PatternQueue_increment_pattern_at", "[pattern]")
   CHECK("00" == pq.at(2).name());
   CHECK(&pq[0] == &pq.at(2));
   CHECK(&pq.at(0) != &pq[1]);
+}
+
+TEST_CASE("PatternQueue_decrement_pattern_at", "[pattern]")
+{
+  mt::PatternQueue pq;
+  auto iter = std::begin(pq);
+  pq.append_duplicate_pattern(iter);
+  pq.append_duplicate_pattern(iter);
+  CHECK(3U == pq.size());
+  ++iter;
+  pq.increment_pattern_at(iter);
+  ++iter;
+  pq.increment_pattern_at(iter);
+  pq.increment_pattern_at(iter);
+  CHECK("00" == pq[0].name());
+  CHECK("01" == pq[1].name());
+  CHECK("02" == pq.at(2).name());
+  CHECK(&pq[0] != &pq.at(2));
+  CHECK(&pq.at(0) != &pq[1]);
+  pq.decrement_pattern_at(iter);
+  --iter;
+  pq.decrement_pattern_at(iter);
+  // cannot decrement past 0, stay at 0
+  --iter;
+  pq.decrement_pattern_at(iter);
+  CHECK("00" == pq[0].name());
+  CHECK("00" == pq[1].name());
+  CHECK("01" == pq.at(2).name());
+  CHECK(&pq[0] != &pq.at(2));
+  CHECK(&pq.at(0) == &pq[1]);
 }
 
 TEST_CASE("PatternQueue_iterator", "[pattern]")

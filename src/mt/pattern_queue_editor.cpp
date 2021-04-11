@@ -43,6 +43,33 @@ void PatternQueueEditor::draw_widgets()
   {
     display_current_pattern();
   }
+  if (ImGui::Button("add"))
+  {
+    pattern_queue->append_duplicate_pattern(std::begin(*pattern_queue) + current_queue_idx);
+    ++current_queue_idx;
+    display_current_pattern();
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("rem"))
+  {
+    pattern_queue->remove_pattern_from_queue(std::begin(*pattern_queue) + current_queue_idx);
+    current_queue_idx = std::min(current_queue_idx,
+                                 static_cast<int>(pattern_queue->size()) - 1);
+    current_queue_idx = std::max(current_queue_idx, 0);
+    display_current_pattern();
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("inc"))
+  {
+    pattern_queue->increment_pattern_at(std::begin(*pattern_queue) + current_queue_idx);
+    display_current_pattern();
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("dec"))
+  {
+    pattern_queue->decrement_pattern_at(std::begin(*pattern_queue) + current_queue_idx);
+    display_current_pattern();
+  }
 }
 
 void PatternQueueEditor::display_current_pattern()
