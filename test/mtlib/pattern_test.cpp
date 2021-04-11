@@ -4,8 +4,8 @@
 
 TEST_CASE("Pattern_Track_containers", "[pattern]")
 {
-  mt::Pattern p0{0x40, 8};
-  mt::Pattern p1{0x60, 12};
+  mt::Pattern p0{"name", 0x40, 8};
+  mt::Pattern p1{"name", 0x60, 12};
   CHECK(8 == p0.size());
   CHECK(8 == std::distance(p0.begin(), p0.end()));
   CHECK(12 == std::distance(p1.begin(), p1.end()));

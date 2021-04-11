@@ -3,6 +3,7 @@
 #include "instrument_editor.h"
 #include "instrument_list.h"
 #include "keyboard.h"
+#include "pattern_queue_editor.h"
 #include "pattern_view.h"
 #include "mtlib/config.h"
 #include "mtlib/project.h"
@@ -21,6 +22,7 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   instrument_list{std::make_unique<InstrumentList>()},
   instrument_editor{std::make_unique<InstrumentEditor>()},
   pattern_view{std::make_unique<PatternView>()},
+  pattern_queue_editor{std::make_unique<PatternQueueEditor>(*pattern_view)},
   config{cfg}
 {
   main_window->set_size(config.get_window_size());
@@ -36,6 +38,7 @@ MuzakTracker::MuzakTracker(mt::Config& cfg) :
   main_window->add_widget(*instrument_list);
   main_window->add_widget(*instrument_editor);
   main_window->add_widget(*pattern_view);
+  main_window->add_widget(*pattern_queue_editor);
   main_window->get_eventprocessor().add_eventlistener(*keyboard);
   main_window->get_eventprocessor().add_eventlistener(*pattern_view);
 
@@ -127,6 +130,13 @@ void MuzakTracker::create_actions()
                                      spdlog::info("Toggle pattern view");
                                      pattern_view->toggle_active();
                                    },
+                                   Action::shortcut(sf::Keyboard::F8, false, false)});
+  view_actions.emplace_back(Action{"Toggle pattern queue editor",
+                                   [this]()
+                                   {
+                                     spdlog::info("Toggle pattern queue editor");
+                                     pattern_queue_editor->toggle_active();
+                                   },
                                    Action::shortcut(sf::Keyboard::F9, false, false)});
   view_actions.emplace_back(Action{"Toggle keyboard",
                                    [this]()
@@ -191,7 +201,7 @@ void MuzakTracker::set_current_project(std::unique_ptr<mt::Project> p)
   project = std::move(p);
 
   instrument_list->set_current_project(*project);
-  pattern_view->display_pattern(project->get_pattern(0));
+  pattern_queue_editor->set_pattern_queue(project->get_pattern_queue());
   main_window->set_subtitle(std::string{project->get_title()}
                             + " [" + project->get_filename().string() + "]");
 }

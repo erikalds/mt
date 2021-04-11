@@ -20,6 +20,7 @@ namespace mt {
 class InstrumentEditor;
 class InstrumentList;
 class Keyboard;
+class PatternQueueEditor;
 class PatternView;
 
 class MuzakTracker
@@ -48,6 +49,7 @@ private:
   std::unique_ptr<InstrumentList> instrument_list;
   std::unique_ptr<InstrumentEditor> instrument_editor;
   std::unique_ptr<PatternView> pattern_view;
+  std::unique_ptr<PatternQueueEditor> pattern_queue_editor;
   std::unique_ptr<mt::Project> project;
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;

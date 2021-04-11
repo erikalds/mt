@@ -3,6 +3,7 @@
 #include "mtlib/instrument.h"
 #include "mtlib/note.h"
 #include "mtlib/pattern.h"
+#include "mtlib/pattern_queue.h"
 #include "mtlib/sample.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
@@ -14,9 +15,9 @@
 namespace mt {
 
   Project::Project() :
-    title{"untitled"}
+    title{"untitled"},
+    pattern_queue{std::make_unique<PatternQueue>()}
   {
-    patterns.emplace_back(std::make_unique<Pattern>(0x40, 8)); // for testing
   }
 
   Project::~Project() = default;
@@ -91,14 +92,9 @@ namespace mt {
     return instruments.size();
   }
 
-  [[nodiscard]] const Pattern& Project::get_pattern(std::size_t idx) const
+  [[nodiscard]] PatternQueue& Project::get_pattern_queue()
   {
-    return *patterns[idx];
-  }
-
-  [[nodiscard]] Pattern& Project::get_pattern(std::size_t idx)
-  {
-    return *patterns[idx];
+    return *pattern_queue;
   }
 
 }  // namespace mt

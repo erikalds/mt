@@ -8,6 +8,8 @@ add_executable(mt
   main.cpp
   muzaktracker.cpp
   muzaktracker.h
+  pattern_queue_editor.cpp
+  pattern_queue_editor.h
   pattern_view.cpp
   pattern_view.h
   sample_view.cpp

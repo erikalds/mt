@@ -56,8 +56,12 @@ namespace mt {
   class Pattern
   {
   public:
-    Pattern(std::size_t length, std::size_t track_count) :
-      pattern{track_count, Track{length}} {}
+    Pattern(std::string pattern_name, std::size_t length,
+            std::size_t track_count) :
+      pattern{track_count, Track{length}}, name_{std::move(pattern_name)} {}
+
+    [[nodiscard]] std::string_view name() const { return name_; }
+    void set_name(std::string_view new_name) { name_ = new_name; }
 
     [[nodiscard]] const Track& operator[](std::size_t idx) const
     { return pattern[idx]; }
@@ -78,6 +82,7 @@ namespace mt {
 
   private:
     std::vector<Track> pattern;
+    std::string name_;
   };
 
 }  // namespace mt

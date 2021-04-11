@@ -8,6 +8,8 @@ add_library(mtlib STATIC
   note.h
   pattern.cpp
   pattern.h
+  pattern_queue.cpp
+  pattern_queue.h
   project.cpp
   project.h
   sample.cpp

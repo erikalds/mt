@@ -10,6 +10,7 @@ namespace mt {
 
   class Instrument;
   class Pattern;
+  class PatternQueue;
 
   /// Document class for one musical project/song.
   class Project
@@ -32,14 +33,14 @@ namespace mt {
     [[nodiscard]] std::string_view get_title() const { return title; }
     [[nodiscard]] std::filesystem::path get_filename() const { return project_filename; }
 
-    [[nodiscard]] const Pattern& get_pattern(std::size_t idx) const;
-    [[nodiscard]] Pattern& get_pattern(std::size_t idx);
+    [[nodiscard]] PatternQueue& get_pattern_queue();
 
   private:
     std::string title;
     std::filesystem::path project_filename;
     std::vector<std::unique_ptr<Instrument>> instruments;
     std::vector<std::unique_ptr<Pattern>> patterns;
+    std::unique_ptr<PatternQueue> pattern_queue;
   };
 
 } // namespace mt
