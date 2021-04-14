@@ -13,7 +13,11 @@ catch_discover_tests(
   base64_tests
   TEST_PREFIX
   "unittests.base64."
-  EXTRA_ARGS
-  -s
-  --reporter=xml
-  --out=unittests.base64.xml)
+  REPORTER
+  xml
+  OUTPUT_DIR
+  .
+  OUTPUT_PREFIX
+  "unittests.base64."
+  OUTPUT_SUFFIX
+  .xml)

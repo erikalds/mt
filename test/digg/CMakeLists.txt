@@ -14,7 +14,11 @@ catch_discover_tests(
   digg_tests
   TEST_PREFIX
   "unittests.digg."
-  EXTRA_ARGS
-  -s
-  --reporter=xml
-  --out=unittests.digg.xml)
+  REPORTER
+  xml
+  OUTPUT_DIR
+  .
+  OUTPUT_PREFIX
+  "unittests.digg."
+  OUTPUT_SUFFIX
+  .xml)

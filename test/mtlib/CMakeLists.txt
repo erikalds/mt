@@ -17,7 +17,11 @@ catch_discover_tests(
   mtlib_tests
   TEST_PREFIX
   "unittests.mtlib."
-  EXTRA_ARGS
-  -s
-  --reporter=xml
-  --out=unittests.mtlib.xml)
+  REPORTER
+  xml
+  OUTPUT_DIR
+  .
+  OUTPUT_PREFIX
+  "unittests.mtlib."
+  OUTPUT_SUFFIX
+  .xml)
