@@ -39,7 +39,6 @@ namespace mt {
     std::string title;
     std::filesystem::path project_filename;
     std::vector<std::unique_ptr<Instrument>> instruments;
-    std::vector<std::unique_ptr<Pattern>> patterns;
     std::unique_ptr<PatternQueue> pattern_queue;
   };
 

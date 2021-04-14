@@ -1,6 +1,7 @@
 #include "pattern_queue.h"
 
 #include "mtlib/pattern.h"
+#include <yaml-cpp/yaml.h>
 #include <stdexcept>
 
 namespace mt {
@@ -47,6 +48,36 @@ namespace mt {
     {
       --queue[iter.pos];
     }
+  }
+
+  std::unique_ptr<PatternQueue> PatternQueue::load_from_yaml(const YAML::Node& node)
+  {
+    auto pq = std::make_unique<PatternQueue>();
+    pq->patterns.clear();
+    for (const auto& pn : node["patterns"])
+    {
+      pq->patterns.push_back(Pattern::load_from_yaml(pn));
+    }
+    pq->queue.clear();
+    for (const auto& qelem : node["queue"])
+    {
+      pq->queue.push_back(qelem.as<std::size_t>());
+    }
+    return pq;
+  }
+
+  YAML::Node PatternQueue::get_as_yaml() const
+  {
+    YAML::Node node{};
+    for (const auto& p : patterns)
+    {
+      node["patterns"].push_back(p->get_as_yaml());
+    }
+    for (const auto& qidx : queue)
+    {
+      node["queue"].push_back(qidx);
+    }
+    return node;
   }
 
   void PatternQueue::add_pattern()

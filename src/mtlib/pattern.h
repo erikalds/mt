@@ -5,9 +5,12 @@
 #include <bits/c++config.h>
 #include <cstdint>
 #include <deque>
+#include <iosfwd>
 #include <optional>
 #include <string>
 #include <vector>
+
+namespace YAML { class Node; }
 
 namespace mt {
 
@@ -28,7 +31,13 @@ namespace mt {
     std::vector<std::optional<std::uint16_t>> mod; // NOLINT - public visibility
     /// This event is a signal to the currently playing instrument to stop.
     bool stop = false; // NOLINT - public visibility
+
+    static NoteEvent load_from_yaml(const YAML::Node& node);
+    [[nodiscard]] std::optional<YAML::Node> get_as_yaml() const;
   };
+
+  bool operator==(const NoteEvent& x, const NoteEvent& y);
+  std::ostream& operator<<(std::ostream& ost, const NoteEvent& x);
 
   class Track
   {
@@ -47,6 +56,9 @@ namespace mt {
     [[nodiscard]] iterator end() { return track.end(); }
     [[nodiscard]] const_iterator begin() const { return track.begin(); }
     [[nodiscard]] const_iterator end() const { return track.end(); }
+
+    static Track load_from_yaml(const YAML::Node& node);
+    [[nodiscard]] YAML::Node get_as_yaml() const;
 
   private:
     std::vector<NoteEvent> track;
@@ -79,6 +91,9 @@ namespace mt {
 
     [[nodiscard]] std::size_t get_track_length() const
     { return pattern[0].size(); }
+
+    static std::unique_ptr<Pattern> load_from_yaml(const YAML::Node& node);
+    [[nodiscard]] YAML::Node get_as_yaml() const;
 
   private:
     std::vector<Track> pattern;

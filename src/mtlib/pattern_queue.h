@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+namespace YAML { class Node; }
+
 namespace mt {
 
   class Pattern;
@@ -39,6 +41,9 @@ namespace mt {
     ///
     /// If pattern idx is already at lowest (0), it stays at 0.
     void decrement_pattern_at(const_iterator iter);
+
+    static std::unique_ptr<PatternQueue> load_from_yaml(const YAML::Node& node);
+    [[nodiscard]] YAML::Node get_as_yaml() const;
 
   private:
     void add_pattern();
@@ -128,7 +133,6 @@ namespace mt {
     [[nodiscard]] const_iterator end() const;
 
   private:
-
     std::vector<std::unique_ptr<Pattern>> patterns;
     std::deque<std::size_t> queue;
   };

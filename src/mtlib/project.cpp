@@ -35,6 +35,8 @@ namespace mt {
     {
       instruments.emplace_back(Instrument::load_from_yaml(node));
     }
+
+    pattern_queue = PatternQueue::load_from_yaml(rootnode["project"]["pattern_queue"]);
   }
 
   void Project::save() const
@@ -45,6 +47,7 @@ namespace mt {
     {
       rootnode["project"]["instruments"].push_back(instr->get_as_yaml());
     }
+    rootnode["project"]["pattern_queue"] = pattern_queue->get_as_yaml();
 
     std::ofstream fout(project_filename);
     fout << rootnode;

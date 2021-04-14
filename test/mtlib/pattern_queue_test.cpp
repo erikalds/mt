@@ -2,6 +2,8 @@
 
 #include "mtlib/pattern.h"
 #include <catch2/catch.hpp>
+#include <yaml-cpp/yaml.h>
+
 
 namespace {
 
@@ -315,4 +317,59 @@ TEST_CASE("PatternQueue_iterator", "[pattern]")
     CHECK(0 == std::distance(end, end));
     CHECK(0 == std::distance(cend, cend));
   }
+}
+
+TEST_CASE("PatternQueue_load_from_yaml", "[pattern]")
+{
+  YAML::Node node{};
+  mt::Pattern p0{"p0", 0x40, 8};
+  node["patterns"][0] = p0.get_as_yaml();
+  mt::Pattern p1{"p1", 0x50, 8};
+  node["patterns"][1] = p1.get_as_yaml();
+  mt::Pattern p2{"p2", 0x60, 8};
+  node["patterns"][2] = p2.get_as_yaml();
+  node["queue"][0] = 0;
+  node["queue"][1] = 0;
+  node["queue"][2] = 0;
+  node["queue"][3] = 1;
+  node["queue"][4] = 2;
+  node["queue"][5] = 2;
+  node["queue"][6] = 2;
+  node["queue"][7] = 1;
+
+  auto pq = mt::PatternQueue::load_from_yaml(node);
+  CHECK("p0" == pq->at(0).name());
+  CHECK("p0" == pq->at(1).name());
+  CHECK("p0" == pq->at(2).name());
+  CHECK("p1" == pq->at(3).name());
+  CHECK("p2" == pq->at(4).name());
+  CHECK("p2" == pq->at(5).name());
+  CHECK("p2" == pq->at(6).name());
+  CHECK("p1" == pq->at(7).name());
+}
+
+TEST_CASE("PatternQueue_get_as_yaml", "[pattern]")
+{
+  mt::PatternQueue pq{};
+  pq[0].set_name("intro");
+  pq.append_duplicate_pattern(pq.begin());
+  pq.increment_pattern_at(++pq.begin());
+  pq[1].set_name("body");
+  pq.append_duplicate_pattern(++pq.begin());
+  pq.append_duplicate_pattern(++pq.begin());
+  pq.append_duplicate_pattern(++pq.begin());
+  pq.append_duplicate_pattern(++pq.begin());
+  pq.increment_pattern_at(--pq.end());
+  pq[5].set_name("outro");
+
+  auto node = pq.get_as_yaml();
+  CHECK("intro" == node["patterns"][0]["name"].as<std::string>());
+  CHECK("body" == node["patterns"][1]["name"].as<std::string>());
+  CHECK("outro" == node["patterns"][2]["name"].as<std::string>());
+  CHECK(0 == node["queue"][0].as<int>());
+  CHECK(1 == node["queue"][1].as<int>());
+  CHECK(1 == node["queue"][2].as<int>());
+  CHECK(1 == node["queue"][3].as<int>());
+  CHECK(1 == node["queue"][4].as<int>());
+  CHECK(2 == node["queue"][5].as<int>());
 }
