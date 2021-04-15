@@ -80,6 +80,8 @@ void PatternView::event_occurred(const sf::Event& e)
 
   if (e.type == sf::Event::KeyPressed)
   {
+    constexpr const auto rowjump{0x10};
+    const auto track_length = static_cast<int>(current_pattern->get_track_length());
     if (e.key.code == sf::Keyboard::Down)
     {
       ++current_row;
@@ -87,6 +89,22 @@ void PatternView::event_occurred(const sf::Event& e)
     else if (e.key.code == sf::Keyboard::Up)
     {
       --current_row;
+    }
+    else if (e.key.code == sf::Keyboard::PageDown)
+    {
+      current_row = std::min(track_length - 1, current_row + rowjump);
+    }
+    else if (e.key.code == sf::Keyboard::PageUp)
+    {
+      current_row = std::max(0, current_row - rowjump);
+    }
+    else if (e.key.code == sf::Keyboard::Home)
+    {
+      current_row = 0;
+    }
+    else if (e.key.code == sf::Keyboard::End)
+    {
+      current_row = track_length - 1;
     }
     else if (e.key.code == sf::Keyboard::Left)
     {
@@ -122,10 +140,12 @@ void PatternView::event_occurred(const sf::Event& e)
     {
       return;
     }
-
-    current_row = wrap_pos(current_row, current_pattern->get_track_length());
-    current_column = wrap_pos(current_column, current_pattern->size());
     constexpr const auto subcol_count{9};
+    current_column += (current_subcolumn >= subcol_count) ? 1
+      : ((current_subcolumn < 0) ? -1 : 0);
+
+    current_row = wrap_pos(current_row, track_length);
+    current_column = wrap_pos(current_column, current_pattern->size());
     current_subcolumn = wrap_pos(current_subcolumn, subcol_count);
     spdlog::debug("[Pattern] current column/row: {}[{}]/{}",
                   current_column, current_subcolumn, current_row);
