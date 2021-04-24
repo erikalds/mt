@@ -24,7 +24,7 @@ namespace mt {
 
   void Project::load_from_file(const std::filesystem::path& filename)
   {
-    auto rootnode = YAML::LoadFile(filename);
+    auto rootnode = YAML::LoadFile(filename.string());
     project_filename = filename;
     if (rootnode["project"]["title"].IsDefined())
     {

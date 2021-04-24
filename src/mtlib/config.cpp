@@ -33,7 +33,7 @@ void mt::Config::set_window_size(const std::pair<std::size_t, std::size_t>& size
 {
   if (std::filesystem::exists(filename()))
   {
-    return YAML::LoadFile(filename());
+    return YAML::LoadFile(filename().string());
   }
 
   return YAML::Node{};

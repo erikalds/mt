@@ -13,7 +13,7 @@
 namespace mt {
 
   Sample::Sample(const std::filesystem::path& fname) :
-    sample_name{fname.filename()},
+    sample_name{fname.filename().string()},
     pitch_offset{0}
   {
     if (!sound_buffer.loadFromFile(fname.string()))

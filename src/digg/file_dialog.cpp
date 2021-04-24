@@ -162,7 +162,7 @@ namespace digg {
 
     std::string filename(const std::filesystem::path& p)
     {
-      std::string s{p.filename()};
+      auto s = p.filename().string();
       if (std::filesystem::is_directory(p))
       {
         s += std::filesystem::path::preferred_separator;
