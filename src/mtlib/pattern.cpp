@@ -77,13 +77,13 @@ namespace mt {
 
   NoteEvent NoteEvent::load_from_yaml(const YAML::Node& node)
   {
-    auto modsize = 1UL;
+    std::size_t modsize = 1;
     if (node["mod"] != nullptr)
     {
       modsize = node["mod"].size();
     }
 
-    NoteEvent ne{std::max(1UL, modsize)};
+    NoteEvent ne{std::max(static_cast<std::size_t>(1), modsize)};
     assign<std::string>(ne.note, node, "note");
     assign<int>(ne.instr, node, "instr");
     if (node["stop"] != nullptr)
