@@ -58,9 +58,9 @@ struct fmt::formatter<mt::Note>
   {
     const auto* it = ctx.begin();
     const auto* end = ctx.end();
-    if (it == end || *it != '}')
+    if (it != nullptr && (it == end || *it != '}'))
     {
-      throw format_error{"invalid format"};
+      throw format_error{"invalid format<mt::Note>"};
     }
 
     return it;
@@ -80,9 +80,9 @@ struct fmt::formatter<mt::NoteDef>
   {
     const auto* it = ctx.begin();
     const auto* end = ctx.end();
-    if (it == end || *it != '}')
+    if (it != nullptr && (it == end || *it != '}'))
     {
-      throw format_error{"invalid format"};
+      throw format_error{"invalid format<mt::NoteDef>"};
     }
 
     return it;
