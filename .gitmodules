@@ -1,0 +1,6 @@
+[submodule "src/portaudio"]
+	path = ext/portaudio
+	url = https://github.com/PortAudio/portaudio
+[submodule "ext/portaudio"]
+	path = ext/portaudio
+	url = https://github.com/PortAudio/portaudio
