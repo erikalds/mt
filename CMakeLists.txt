@@ -71,6 +71,8 @@ set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
 include(cmake/Conan.cmake)
 run_conan()
 
+include(ext/build/lib/cmake/portaudio/portaudioConfig.cmake)
+
 set(INTERNAL_INCLUDES "${CMAKE_SOURCE_DIR}/src")
 
 add_subdirectory(src)

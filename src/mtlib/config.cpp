@@ -24,6 +24,18 @@ void mt::Config::set_window_size(const std::pair<std::size_t, std::size_t>& size
   save(rn);
 }
 
+[[nodiscard]] std::optional<int> mt::Config::get_audio_output_device_index() const
+{
+  auto rn = root_node();
+  auto odn = rn["MuzakTracker"]["audio"]["output_device_index"];
+  if (!odn)
+  {
+    return {};
+  }
+
+  return odn.as<int>();
+}
+
 [[nodiscard]] std::filesystem::path mt::Config::filename() const // NOLINT -- could be made static,
 {                                                                // might need state in the future
   return "mt.yml";

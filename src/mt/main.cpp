@@ -1,5 +1,6 @@
 #include "muzaktracker.h"
 #include "mtlib/config.h"
+#include "sndmix/audiosystem.h"
 #include "digg/sentry.h"
 
 #include <docopt/docopt.h>
@@ -44,6 +45,8 @@ int main(int argc, const char* argv[])
   spdlog::debug("ImGui version {}", IMGUI_VERSION);
 
   mt::Config config{};
+  mt::snd::AudioSystem audiosystem{config.get_audio_output_device_index()};
+
   MuzakTracker mt{config};
   if (args["<mzt-file>"])
   {

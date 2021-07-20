@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include <filesystem>
+#include <optional>
 #include <utility>
 
 namespace YAML { class Node; }
@@ -16,6 +17,8 @@ namespace mt {
 
     [[nodiscard]] std::pair<std::size_t, std::size_t> get_window_size() const;
     void set_window_size(const std::pair<std::size_t, std::size_t>& size);
+
+    [[nodiscard]] std::optional<int> get_audio_output_device_index() const;
 
   private:
     [[nodiscard]] std::filesystem::path filename() const;
