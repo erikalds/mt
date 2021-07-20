@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace sf { class Sound; }
+//namespace sf { class Sound; }
 namespace YAML { class Node; }
 
 namespace mt {
@@ -45,7 +45,7 @@ namespace mt {
     [[nodiscard]] const Sample* lookup_sample(const NoteDef& notedef) const;
 
     std::vector<Sample> samples;
-    std::vector<sf::Sound*> sounds;
+    //std::vector<sf::Sound*> sounds;
     std::string instr_name;
     std::vector<std::pair<NoteDef, NoteDef>> sample_lut;
   };

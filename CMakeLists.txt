@@ -66,7 +66,9 @@ set(CONAN_EXTRA_REQUIRES
   yaml-cpp/0.6.3)
 
 set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
-  sfml:shared=False sfml:graphics=True sfml:audio=True sfml:window=True libalsa:disable_python=True)
+  sfml:shared=False sfml:graphics=True #sfml:audio=True
+  sfml:window=True #libalsa:disable_python=True
+  )
 
 include(cmake/Conan.cmake)
 run_conan()

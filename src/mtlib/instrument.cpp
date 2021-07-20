@@ -17,7 +17,7 @@ namespace mt {
   } // anonymous namespace
 
   Instrument::Instrument(std::string name) :
-    sounds{octaves * notes, nullptr},
+    // sounds{octaves * notes, nullptr},
     instr_name{std::move(name)}
   {
   }
@@ -27,10 +27,10 @@ namespace mt {
 
   Instrument::~Instrument()
   {
-    for (auto* s : sounds)
-    {
-      std::unique_ptr<sf::Sound>{s};
-    }
+    // for (auto* s : sounds)
+    // {
+    //   std::unique_ptr<sf::Sound>{s};
+    // }
   }
 
   void Instrument::add_sample(Sample&& sample)
@@ -143,72 +143,72 @@ namespace mt {
     }
   }
 
-  void Instrument::play(const NoteDef& notedef)
+  void Instrument::play(const NoteDef& /*notedef*/)
   {
-    const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
-    assert(idx < sounds.size());
-    auto* sound = sounds[idx];
-    if (sound == nullptr)
-    {
-      const auto* sample = lookup_sample(notedef);
-      if (sample == nullptr)
-      {
-        spdlog::debug("[{}] No sample found for {} [{}]", name(), notedef, idx);
-        return;
-      }
-      spdlog::debug("[{}] Create sound {} [{}]", name(), notedef, idx);
-      auto s = sample->create_sound();
-      s->setLoop(true);
-      if (notedef.octave >= 3)
-      {
-        s->setPitch(sample->get_pitch_offset()
-                    + static_cast<float>(notedef.octave - 2)
-                    + (static_cast<float>(notedef.note) / static_cast<float>(notes)));
-      }
-      spdlog::debug("[{}] Pitch {}", name(), s->getPitch());
-      sound = s.get();
-      sounds[idx] = s.release();
-    }
+    // const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
+    // assert(idx < sounds.size());
+    // auto* sound = sounds[idx];
+    // if (sound == nullptr)
+    // {
+    //   const auto* sample = lookup_sample(notedef);
+    //   if (sample == nullptr)
+    //   {
+    //     spdlog::debug("[{}] No sample found for {} [{}]", name(), notedef, idx);
+    //     return;
+    //   }
+    //   spdlog::debug("[{}] Create sound {} [{}]", name(), notedef, idx);
+    //   auto s = sample->create_sound();
+    //   s->setLoop(true);
+    //   if (notedef.octave >= 3)
+    //   {
+    //     s->setPitch(sample->get_pitch_offset()
+    //                 + static_cast<float>(notedef.octave - 2)
+    //                 + (static_cast<float>(notedef.note) / static_cast<float>(notes)));
+    //   }
+    //   spdlog::debug("[{}] Pitch {}", name(), s->getPitch());
+    //   sound = s.get();
+    //   sounds[idx] = s.release();
+    // }
 
-    spdlog::debug("[{}] Got sound {} [{}]", name(), notedef, idx);
+    // spdlog::debug("[{}] Got sound {} [{}]", name(), notedef, idx);
 
-    if (sound->getStatus() != sf::SoundSource::Playing)
-    {
-      if (sound->getBuffer() == nullptr)
-      {
-        spdlog::debug("[{}] Instrument has no sound_buffer", name());
-        //sound->setBuffer(sound_buffer);
-      }
-      spdlog::debug("[{}] Play {} [{}]", name(), notedef, idx);
-      sound->play();
-    }
+    // if (sound->getStatus() != sf::SoundSource::Playing)
+    // {
+    //   if (sound->getBuffer() == nullptr)
+    //   {
+    //     spdlog::debug("[{}] Instrument has no sound_buffer", name());
+    //     //sound->setBuffer(sound_buffer);
+    //   }
+    //   spdlog::debug("[{}] Play {} [{}]", name(), notedef, idx);
+    //   sound->play();
+    // }
   }
 
-  void Instrument::stop(const NoteDef& notedef)
+  void Instrument::stop(const NoteDef& /*notedef*/)
   {
-    const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
-    assert(idx < sounds.size());
-    std::unique_ptr<sf::Sound> sound{sounds[idx]};
-    if (!sound)
-    {
-      return;
-    }
-    sounds[idx] = nullptr;
+    // const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
+    // assert(idx < sounds.size());
+    // std::unique_ptr<sf::Sound> sound{sounds[idx]};
+    // if (!sound)
+    // {
+    //   return;
+    // }
+    // sounds[idx] = nullptr;
 
-    if (sound->getStatus() == sf::SoundSource::Playing)
-    {
-      spdlog::debug("Stop instrument {} [{}]", notedef, idx);
-      sound->stop();
-    }
+    // if (sound->getStatus() == sf::SoundSource::Playing)
+    // {
+    //   spdlog::debug("Stop instrument {} [{}]", notedef, idx);
+    //   sound->stop();
+    // }
   }
 
   void Instrument::stop()
   {
-    for (auto*& s : sounds)
-    {
-      std::unique_ptr<sf::Sound> sound{s};
-      s = nullptr;
-    }
+    // for (auto*& s : sounds)
+    // {
+    //   std::unique_ptr<sf::Sound> sound{s};
+    //   s = nullptr;
+    // }
   }
 
   const Sample* Instrument::lookup_sample(const NoteDef& notedef) const

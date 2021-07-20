@@ -16,49 +16,49 @@ namespace mt {
     sample_name{fname.filename().string()},
     pitch_offset{0}
   {
-    if (!sound_buffer.loadFromFile(fname.string()))
-    {
-      spdlog::error("Failed to load PCM data for sample: {}", name());
-    }
-    else
-    {
-      spdlog::debug("Successfully loaded PCM data for sample: {}", name());
-    }
+    // if (!sound_buffer.loadFromFile(fname.string()))
+    // {
+    //   spdlog::error("Failed to load PCM data for sample: {}", name());
+    // }
+    // else
+    // {
+    //   spdlog::debug("Successfully loaded PCM data for sample: {}", name());
+    // }
   }
 
-  Sample::Sample(std::string name_, void* pcm_data, std::size_t data_size,
+  Sample::Sample(std::string name_, void* /*pcm_data*/, std::size_t /*data_size*/,
                  float pitch_offset_) :
     sample_name{std::move(name_)},
     pitch_offset{pitch_offset_}
   {
-    if (!sound_buffer.loadFromMemory(pcm_data, data_size))
-    {
-      spdlog::error("Failed to load PCM data for sample: {}", name());
-    }
-    else
-    {
-      spdlog::debug("Successfully loaded PCM data for sample: {}", name());
-    }
+    // if (!sound_buffer.loadFromMemory(pcm_data, data_size))
+    // {
+    //   spdlog::error("Failed to load PCM data for sample: {}", name());
+    // }
+    // else
+    // {
+    //   spdlog::debug("Successfully loaded PCM data for sample: {}", name());
+    // }
   }
 
-  std::unique_ptr<sf::Sound> Sample::create_sound() const
-  {
-    auto s = std::make_unique<sf::Sound>();
-    s->setBuffer(sound_buffer);
-    return s;
-  }
+  // std::unique_ptr<sf::Sound> Sample::create_sound() const
+  // {
+  //   auto s = std::make_unique<sf::Sound>();
+  //   s->setBuffer(sound_buffer);
+  //   return s;
+  // }
 
-  void Sample::present_audio_data(AudioDataPresenter& p) const
+  void Sample::present_audio_data(AudioDataPresenter& /*p*/) const
   {
-    p.present_details(sound_buffer.getSampleRate(), sound_buffer.getDuration());
-    for (auto channel = 0U; channel < sound_buffer.getChannelCount(); ++channel)
-    {
-      p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.getSamples(),
-                                                                 sound_buffer.getSampleCount(),
-                                                                 sound_buffer.getChannelCount(),
-                                                                 channel},
-                        sample_data_iterator<const std::int16_t>{});
-    }
+    // p.present_details(sound_buffer.getSampleRate(), sound_buffer.getDuration());
+    // for (auto channel = 0U; channel < sound_buffer.getChannelCount(); ++channel)
+    // {
+    //   p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.getSamples(),
+    //                                                              sound_buffer.getSampleCount(),
+    //                                                              sound_buffer.getChannelCount(),
+    //                                                              channel},
+    //                     sample_data_iterator<const std::int16_t>{});
+    // }
   }
 
   YAML::Node Sample::get_as_yaml() const
@@ -67,13 +67,13 @@ namespace mt {
     node["name"] = this->sample_name;
     node["pitch-offset"] = this->pitch_offset;
 
-    assert(this->sound_buffer.getSampleCount() < std::numeric_limits<std::uint32_t>::max());
-    assert(this->sound_buffer.getChannelCount() < std::numeric_limits<std::uint16_t>::max());
-    auto sc = static_cast<std::uint32_t>(this->sound_buffer.getSampleCount());
-    auto cc = static_cast<std::uint16_t>(this->sound_buffer.getChannelCount());
-    WavFileFormat wff{this->sound_buffer.getSamples(), sc, cc,
-                      this->sound_buffer.getSampleRate()};
-    node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
+    // assert(this->sound_buffer.getSampleCount() < std::numeric_limits<std::uint32_t>::max());
+    // assert(this->sound_buffer.getChannelCount() < std::numeric_limits<std::uint16_t>::max());
+    // auto sc = static_cast<std::uint32_t>(this->sound_buffer.getSampleCount());
+    // auto cc = static_cast<std::uint16_t>(this->sound_buffer.getChannelCount());
+    // WavFileFormat wff{this->sound_buffer.getSamples(), sc, cc,
+    //                   this->sound_buffer.getSampleRate()};
+    // node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
 
     return node;
   }
