@@ -41,7 +41,105 @@ namespace mt {
     {
       this->write_at_pos(pos, samples[i]);
     }
- }
+  }
+
+  namespace {
+
+    const auto bits_per_byte{8U};
+
+    template<typename T>
+    constexpr T read_at_pos(const void* mem, std::size_t pos)
+    {
+      T val{0};
+      const T bytemask{0xFF};
+      for (std::size_t i = 0; i < sizeof(T); ++i)
+      {
+        const T byte = static_cast<T>(*(static_cast<const char*>(mem) + pos++)) & bytemask;
+        val += static_cast<T>(byte << (i * bits_per_byte));
+      }
+      return val;
+    }
+
+    template<int inc=1>
+    constexpr void increment(const void** mem)
+    {
+      *mem = static_cast<const char*>(*mem) + inc;
+    }
+
+    template<typename T>
+    constexpr T read(const void** mem)
+    {
+      T val = read_at_pos<T>(*mem, 0);
+      increment<sizeof(T)>(mem);
+      return val;
+    }
+
+    // We always read four bytes when reading strings from WAV format
+    template<>
+    constexpr std::string_view read<std::string_view>(const void** mem)
+    {
+      const auto* char_data = static_cast<const char*>(*mem);
+      increment<4>(mem);
+      return {char_data, 4};
+    }
+  }  // anonymous namespace
+
+  std::optional<WavFileFormat> WavFileFormat::load_from_memory(const void* mem,
+                                                               std::size_t size)
+  {
+#define RETURN_IF(boolean_expr) if ((boolean_expr)) return {} // NOLINT
+
+    RETURN_IF("RIFF" != read<std::string_view>(&mem)); // 0 0
+    auto main_chunk_size = read<std::uint32_t>(&mem); // 4 4
+    const auto WAVE_pos = 8;
+    RETURN_IF(main_chunk_size + WAVE_pos != size);
+
+    RETURN_IF("WAVE" != read<std::string_view>(&mem)); // 8 8
+    RETURN_IF("fmt " != read<std::string_view>(&mem)); // 12 c
+    auto format_chunk_size = read<std::uint32_t>(&mem); // 16 10
+    const void* data = static_cast<const char*>(mem) + format_chunk_size;
+    auto format = read<std::uint16_t>(&mem); // 20 14
+    RETURN_IF(format != 1); // we only support PCM data
+    auto channel_count = read<std::uint16_t>(&mem); // 22 16
+    auto sample_rate = read<std::uint32_t>(&mem); // 24 18
+    /*auto byte_rate =*/ read<std::uint32_t>(&mem); // 28 1c
+    /*auto block_align =*/ read<std::uint16_t>(&mem); // 32 20
+    auto bits_per_sample = read<std::uint16_t>(&mem); // 34 22
+
+    RETURN_IF("data" != read<std::string_view>(&data)); // 36 24 (iff format_chunk_size == 16)
+    auto data_size = read<std::uint32_t>(&data); // 40 28
+    auto bytes_per_sample = bits_per_sample / bits_per_byte;
+    auto sample_count = data_size / bytes_per_sample;
+    return WavFileFormat{static_cast<const std::int16_t*>(data), // 44 2c
+                         sample_count, channel_count, sample_rate};
+#undef RETURN_IF
+  }
+
+  [[nodiscard]] std::uint16_t WavFileFormat::channel_count() const
+  {
+    const auto channel_count_pos{22};
+    return read_at_pos<std::uint16_t>(&data[0], channel_count_pos);
+  }
+
+  [[nodiscard]] std::uint32_t WavFileFormat::sample_rate() const
+  {
+    const auto sample_rate_pos{24};
+    return read_at_pos<std::uint32_t>(&data[0], sample_rate_pos);
+  }
+
+  [[nodiscard]] std::uint32_t WavFileFormat::sample_count() const
+  {
+    const auto sample_count_pos{40};
+    const auto bytes_per_sample{2U};
+    return read_at_pos<std::uint32_t>(&data[0], sample_count_pos) / bytes_per_sample;
+  }
+
+  [[nodiscard]] const std::int16_t* WavFileFormat::samples() const
+  {
+    const auto data_pos{44};
+    const void* ptr = &data[data_pos];
+    return static_cast<const std::int16_t*>(ptr);
+  }
 
   void WavFileFormat::write_at_pos(std::size_t& i, std::string_view val)
   {
