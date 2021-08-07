@@ -1,7 +1,7 @@
 #ifndef SAMPLE_H
 #define SAMPLE_H
 
-//#include <SFML/Audio/SoundBuffer.hpp>
+#include "sndmix/soundbuffer.h"
 #include <bits/c++config.h>
 #include <filesystem>
 #include <memory>
@@ -23,18 +23,20 @@ namespace mt {
 
     //std::unique_ptr<sf::Sound> create_sound() const;
 
-    std::string_view name() const { return sample_name; }
+    [[nodiscard]] std::string_view name() const { return sample_name; }
     void set_name(std::string_view n) { sample_name = n; }
 
-    float get_pitch_offset() const { return pitch_offset; }
+    [[nodiscard]] float get_pitch_offset() const { return pitch_offset; }
 
     void present_audio_data(AudioDataPresenter& p) const;
 
-    YAML::Node get_as_yaml() const;
+    [[nodiscard]] YAML::Node get_as_yaml() const;
     [[nodiscard]] static Sample load_from_yaml(const YAML::Node& node);
 
   private:
-    //sf::SoundBuffer sound_buffer;
+    void load_sound_buffer(const void* pcm_data, std::size_t data_size);
+
+    snd::SoundBuffer sound_buffer;
     std::string sample_name;
     float pitch_offset;
   };

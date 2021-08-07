@@ -22,5 +22,5 @@ target_include_directories(mtlib PRIVATE ${INTERNAL_INCLUDES})
 
 target_link_libraries(mtlib PRIVATE
   project_warnings project_options
-  base64
+  base64 sndmix
   CONAN_PKG::imgui-sfml CONAN_PKG::yaml-cpp CONAN_PKG::spdlog)

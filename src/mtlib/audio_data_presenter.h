@@ -1,7 +1,7 @@
 #ifndef AUDIO_DATA_PRESENTER_H
 #define AUDIO_DATA_PRESENTER_H
 
-#include <SFML/System/Time.hpp>
+#include <chrono>
 #include <cstdint>
 
 namespace mt {
@@ -15,7 +15,7 @@ namespace mt {
     virtual ~AudioDataPresenter() = 0;
 
     virtual void present_details(unsigned int /*sample_rate*/,
-                                 const sf::Time& /*duration*/) {}
+                                 const std::chrono::microseconds& /*duration*/) {}
     virtual void present_channel(sample_data_iterator<const std::int16_t> begin,
                                  sample_data_iterator<const std::int16_t> end) = 0;
   };

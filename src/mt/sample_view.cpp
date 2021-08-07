@@ -28,9 +28,12 @@ void SampleView::clear()
   channels.clear();
 }
 
-void SampleView::present_details(unsigned int sample_rate, const sf::Time& duration)
+void SampleView::present_details(unsigned int sample_rate, const std::chrono::microseconds& duration)
 {
-  overlay = fmt::format("{} s. / {} Hz", duration.asSeconds(), sample_rate);
+  const auto us_pr_sec = 1.0e6;
+  overlay = fmt::format("{} s. / {} Hz",
+                        static_cast<double>(duration.count()) / us_pr_sec,
+                        sample_rate);
 }
 
 void SampleView::present_channel(mt::sample_data_iterator<const std::int16_t> begin,

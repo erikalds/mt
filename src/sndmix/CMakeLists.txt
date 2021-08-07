@@ -10,6 +10,8 @@ add_library(sndmix STATIC
   node.h
   sinknode.cpp
   sinknode.h
+  soundbuffer.cpp
+  soundbuffer.h
   sourcenode.cpp
   sourcenode.h
   )

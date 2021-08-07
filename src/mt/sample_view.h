@@ -16,7 +16,8 @@ public:
   void paint();
 
   void clear();
-  void present_details(unsigned int sample_rate, const sf::Time& duration) override;
+  void present_details(unsigned int sample_rate,
+                       const std::chrono::microseconds& duration) override;
   void present_channel(mt::sample_data_iterator<const std::int16_t> begin,
                        mt::sample_data_iterator<const std::int16_t> end) override;
 

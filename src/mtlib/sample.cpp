@@ -3,11 +3,12 @@
 #include "mtlib/audio_data_presenter.h"
 #include "mtlib/sample_data_iterator.h"
 #include "mtlib/wav_file_format.h"
+#include "sndmix/soundbuffer.h"
 #include "base64/decode.h"
 #include "base64/encode.h"
 #include <cstdint>
+#include <fstream>
 #include <spdlog/spdlog.h>
-#include <SFML/Audio/Sound.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace mt {
@@ -16,29 +17,28 @@ namespace mt {
     sample_name{fname.filename().string()},
     pitch_offset{0}
   {
-    // if (!sound_buffer.loadFromFile(fname.string()))
-    // {
-    //   spdlog::error("Failed to load PCM data for sample: {}", name());
-    // }
-    // else
-    // {
-    //   spdlog::debug("Successfully loaded PCM data for sample: {}", name());
-    // }
+    std::ifstream in(fname, std::ios::binary | std::ios::ate);
+    const auto ssize = in.tellg();
+    const auto size = static_cast<std::size_t>(ssize);
+    in.seekg(0, std::ios::beg);
+    std::vector<char> data(size);
+    if (in.read(data.data(), ssize))
+    {
+      spdlog::debug("Successfully read file {} [{} bytes]", fname.string(), size);
+      load_sound_buffer(data.data(), size);
+    }
+    else
+    {
+      spdlog::error("Failed to read file {} [{} bytes]", fname.string(), size);
+    }
   }
 
-  Sample::Sample(std::string name_, void* /*pcm_data*/, std::size_t /*data_size*/,
+  Sample::Sample(std::string name_, void* pcm_data, std::size_t data_size,
                  float pitch_offset_) :
     sample_name{std::move(name_)},
     pitch_offset{pitch_offset_}
   {
-    // if (!sound_buffer.loadFromMemory(pcm_data, data_size))
-    // {
-    //   spdlog::error("Failed to load PCM data for sample: {}", name());
-    // }
-    // else
-    // {
-    //   spdlog::debug("Successfully loaded PCM data for sample: {}", name());
-    // }
+    load_sound_buffer(pcm_data, data_size);
   }
 
   // std::unique_ptr<sf::Sound> Sample::create_sound() const
@@ -48,17 +48,17 @@ namespace mt {
   //   return s;
   // }
 
-  void Sample::present_audio_data(AudioDataPresenter& /*p*/) const
+  void Sample::present_audio_data(AudioDataPresenter& p) const
   {
-    // p.present_details(sound_buffer.getSampleRate(), sound_buffer.getDuration());
-    // for (auto channel = 0U; channel < sound_buffer.getChannelCount(); ++channel)
-    // {
-    //   p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.getSamples(),
-    //                                                              sound_buffer.getSampleCount(),
-    //                                                              sound_buffer.getChannelCount(),
-    //                                                              channel},
-    //                     sample_data_iterator<const std::int16_t>{});
-    // }
+    p.present_details(sound_buffer.get_sample_rate(), sound_buffer.get_duration());
+    for (auto channel = 0U; channel < sound_buffer.get_channel_count(); ++channel)
+    {
+      p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.get_samples(),
+                                                                 sound_buffer.get_sample_count(),
+                                                                 sound_buffer.get_channel_count(),
+                                                                 channel},
+                        sample_data_iterator<const std::int16_t>{});
+    }
   }
 
   YAML::Node Sample::get_as_yaml() const
@@ -67,13 +67,11 @@ namespace mt {
     node["name"] = this->sample_name;
     node["pitch-offset"] = this->pitch_offset;
 
-    // assert(this->sound_buffer.getSampleCount() < std::numeric_limits<std::uint32_t>::max());
-    // assert(this->sound_buffer.getChannelCount() < std::numeric_limits<std::uint16_t>::max());
-    // auto sc = static_cast<std::uint32_t>(this->sound_buffer.getSampleCount());
-    // auto cc = static_cast<std::uint16_t>(this->sound_buffer.getChannelCount());
-    // WavFileFormat wff{this->sound_buffer.getSamples(), sc, cc,
-    //                   this->sound_buffer.getSampleRate()};
-    // node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
+    WavFileFormat wff{this->sound_buffer.get_samples(),
+                      this->sound_buffer.get_sample_count(),
+                      this->sound_buffer.get_channel_count(),
+                      this->sound_buffer.get_sample_rate()};
+    node["pcm-data"] = b64::encode(static_cast<const void*>(wff), wff.size());
 
     return node;
   }
@@ -88,6 +86,24 @@ namespace mt {
     return Sample{node["name"].as<std::string>(),
                   &pcm_data[0], pcm_data.size(),
                   node["pitch-offset"].as<float>()};
+  }
+
+  void Sample::load_sound_buffer(const void* pcm_data, std::size_t data_size)
+  {
+    auto wff = WavFileFormat::load_from_memory(pcm_data, data_size);
+    if (wff)
+    {
+      std::unique_ptr<std::int16_t[]> samples(new std::int16_t[data_size]);
+      std::copy(wff->samples(), wff->samples() + wff->sample_count(),
+                samples.get());
+      spdlog::debug("Successfully loaded PCM data for sample: {}", name());
+      sound_buffer = snd::SoundBuffer(std::move(samples), wff->sample_count(),
+                                      wff->channel_count(), wff->sample_rate());
+    }
+    else
+    {
+      spdlog::error("Failed to load PCM data for sample: {}. Unsupported format.", name());
+    }
   }
 
 }  // namespace mt
