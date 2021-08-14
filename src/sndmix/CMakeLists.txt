@@ -8,6 +8,7 @@ add_library(sndmix STATIC
   channel.cpp
   channel.h
   node.h
+  sample_data_iterator.h
   sinknode.cpp
   sinknode.h
   soundbuffer.cpp

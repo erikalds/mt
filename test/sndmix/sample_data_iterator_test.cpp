@@ -1,4 +1,4 @@
-#include "mtlib/sample_data_iterator.h"
+#include "sndmix/sample_data_iterator.h"
 
 #include <catch2/catch.hpp>
 #include <cstdint>
@@ -11,8 +11,8 @@ TEST_CASE("sample_data_iterator.mono_sample", "[iterator]")
   {
     data.at(i) = static_cast<std::int16_t>(i);
   }
-  mt::sample_data_iterator<std::int16_t> iter{&data[0], data_size};
-  mt::sample_data_iterator<std::int16_t> end{};
+  mt::snd::sample_data_iterator<std::int16_t> iter{&data[0], data_size};
+  mt::snd::sample_data_iterator<std::int16_t> end{};
 
   SECTION("equality")
   {
@@ -106,9 +106,9 @@ TEST_CASE("sample_data_iterator.stereo_sample", "[iterator]")
     data.at(2 * i + 1) = static_cast<std::int16_t>(sample_size + i);
   }
 
-  mt::sample_data_iterator<std::int16_t> liter{&data[0], data_size, 2};
-  mt::sample_data_iterator<std::int16_t> riter{&data[0], data_size, 2, 1};
-  mt::sample_data_iterator<std::int16_t> end{};
+  mt::snd::sample_data_iterator<std::int16_t> liter{&data[0], data_size, 2};
+  mt::snd::sample_data_iterator<std::int16_t> riter{&data[0], data_size, 2, 1};
+  mt::snd::sample_data_iterator<std::int16_t> end{};
 
   SECTION("equality")
   {

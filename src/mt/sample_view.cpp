@@ -1,6 +1,6 @@
 #include "sample_view.h"
 
-#include "mtlib/sample_data_iterator.h"
+#include "sndmix/sample_data_iterator.h"
 #include <fmt/format.h>
 #include <imgui.h>
 #include <cstdint>
@@ -36,8 +36,8 @@ void SampleView::present_details(unsigned int sample_rate, const std::chrono::mi
                         sample_rate);
 }
 
-void SampleView::present_channel(mt::sample_data_iterator<const std::int16_t> begin,
-                                 mt::sample_data_iterator<const std::int16_t> end)
+void SampleView::present_channel(mt::snd::sample_data_iterator<const std::int16_t> begin,
+                                 mt::snd::sample_data_iterator<const std::int16_t> end)
 {
   std::vector<float> c{};
   c.reserve(std::distance(begin, end));

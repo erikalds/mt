@@ -1,7 +1,7 @@
 #include "sample.h"
 
 #include "mtlib/audio_data_presenter.h"
-#include "mtlib/sample_data_iterator.h"
+#include "sndmix/sample_data_iterator.h"
 #include "mtlib/wav_file_format.h"
 #include "sndmix/soundbuffer.h"
 #include "base64/decode.h"
@@ -53,11 +53,11 @@ namespace mt {
     p.present_details(sound_buffer.get_sample_rate(), sound_buffer.get_duration());
     for (auto channel = 0U; channel < sound_buffer.get_channel_count(); ++channel)
     {
-      p.present_channel(sample_data_iterator<const std::int16_t>{sound_buffer.get_samples(),
-                                                                 sound_buffer.get_sample_count(),
-                                                                 sound_buffer.get_channel_count(),
-                                                                 channel},
-                        sample_data_iterator<const std::int16_t>{});
+      p.present_channel(snd::sample_data_iterator<const std::int16_t>{sound_buffer.get_samples(),
+                                                                      sound_buffer.get_sample_count(),
+                                                                      sound_buffer.get_channel_count(),
+                                                                      channel},
+                        snd::sample_data_iterator<const std::int16_t>{});
     }
   }
 

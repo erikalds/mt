@@ -18,8 +18,8 @@ public:
   void clear();
   void present_details(unsigned int sample_rate,
                        const std::chrono::microseconds& duration) override;
-  void present_channel(mt::sample_data_iterator<const std::int16_t> begin,
-                       mt::sample_data_iterator<const std::int16_t> end) override;
+  void present_channel(mt::snd::sample_data_iterator<const std::int16_t> begin,
+                       mt::snd::sample_data_iterator<const std::int16_t> end) override;
 
 private:
   std::list<std::vector<float>> channels;

@@ -2,7 +2,6 @@ add_executable(mtlib_tests
   note_test.cpp
   pattern_queue_test.cpp
   pattern_test.cpp
-  sample_data_iterator_test.cpp
   wav_file_format_test.cpp)
 
 target_link_libraries(mtlib_tests PRIVATE

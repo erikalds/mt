@@ -14,7 +14,6 @@ add_library(mtlib STATIC
   project.h
   sample.cpp
   sample.h
-  sample_data_iterator.h
   wav_file_format.cpp
   wav_file_format.h)
 

@@ -6,7 +6,7 @@
 #include <iterator>
 #include <stdexcept>
 
-namespace mt {
+namespace mt::snd {
 
   template<typename T>
   class sample_data_iterator
@@ -185,6 +185,6 @@ namespace mt {
     return (std::max(rhs.i, this->i) - std::min(rhs.i, this->i)) / rhs.channels;
   }
 
-}  // namespace mt
+}  // namespace mt::snd
 
 #endif /* SAMPLE_DATA_ITERATOR_H */
