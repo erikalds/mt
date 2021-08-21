@@ -2,6 +2,7 @@ add_executable(sndmix_tests
   sample_data_iterator_test.cpp
   sinknode_test.cpp
   soundbuffer_test.cpp
+  sound_test.cpp
   )
 
 target_link_libraries(sndmix_tests PRIVATE
