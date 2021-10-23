@@ -3,6 +3,7 @@
 
 #include <cctype>
 #include <map>
+#include <optional>
 
 namespace b64 {
 
