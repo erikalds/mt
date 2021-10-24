@@ -1,4 +1,5 @@
 add_executable(sndmix_tests
+  interpolating_sample_data_iterator_test.cpp
   sample_data_iterator_test.cpp
   sinknode_test.cpp
   soundbuffer_test.cpp

@@ -158,7 +158,7 @@ namespace mt::snd {
     if (i < channels * x)
     {
       throw std::logic_error{"Cannot iterate before the beginning of the "
-                               "underlying data pointer"};
+                             "underlying data pointer"};
     }
 
     i -= channels * x;
