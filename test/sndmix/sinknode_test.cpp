@@ -34,6 +34,18 @@ TEST_CASE("can_visit_source", "[sndmix]")
   MySource source1;
   MySource source2;
 
+  std::vector<const SourceNode*> sources_called;
+  auto mutable_logging_sources
+    = [&sources_called](SourceNode& sn)
+      {
+        sources_called.push_back(&sn);
+      };
+  auto const_logging_sources
+    = [&sources_called](const SourceNode& sn)
+      {
+        sources_called.push_back(&sn);
+      };
+
   SECTION("no sources")
   {
     sink.uncovered_visitor([](SourceNode& /*sn*/) { FAIL("Should not be called"); });
@@ -59,16 +71,66 @@ TEST_CASE("can_visit_source", "[sndmix]")
   {
     sink.add_source(source1);
     sink.add_source(source2);
-    std::vector<const SourceNode*> sources_called;
-    sink.uncovered_visitor([&sources_called](SourceNode& sn)
-                           {
-                             sources_called.push_back(&sn);
-                           });
-    sink.uncovered_visitor([&sources_called](const SourceNode& sn)
-                           {
-                             sources_called.push_back(&sn);
-                           });
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
     CHECK(std::vector<const SourceNode*>{&source1, &source2, &source1, &source2} == sources_called);
+  }
+  SECTION("can remove sources")
+  {
+    sink.add_source(source1);
+    sink.add_source(source2);
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
+    sink.remove_source(source2);
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
+    CHECK(std::vector<const SourceNode*>{&source1, &source2, &source1,
+                                         &source2, &source1, &source1}
+          == sources_called);
+    CHECK(1 == sink.uncovered_source_count());
+  }
+  SECTION("destroying a source removes it from the sink")
+  {
+    {
+      sink.add_source(source1);
+      MySource source3;
+      sink.add_source(source3);
+    }
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
+    CHECK(std::vector<const SourceNode*>{&source1, &source1} == sources_called);
+    CHECK(1 == sink.uncovered_source_count());
+  }
+  SECTION("Can move a source node")
+  {
+    sink.add_source(source1);
+    sink.add_source(source2);
+    MySource source3{std::move(source1)};
+    CHECK(2 == sink.uncovered_source_count());
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
+    std::vector<const SourceNode*> expected_calls{&source3, &source2,
+                                                  &source3, &source2};
+    source3 = std::move(source2);
+    CHECK(1 == sink.uncovered_source_count());
+    sink.uncovered_visitor(mutable_logging_sources);
+    sink.uncovered_visitor(const_logging_sources);
+    expected_calls.push_back(&source3);
+    expected_calls.push_back(&source3);
+    CHECK(expected_calls == sources_called);
+    CHECK(1 == sink.uncovered_source_count());
+  }
+  SECTION("Can move a sink node")
+  {
+    sink.add_source(source1);
+    sink.add_source(source2);
+    MySink new_sink{std::move(sink)};
+    MySource source3{std::move(source2)};
+    CHECK(2 == new_sink.uncovered_source_count());
+    new_sink.uncovered_visitor(mutable_logging_sources);
+    new_sink.uncovered_visitor(const_logging_sources);
+    CHECK(std::vector<const SourceNode*>{&source1, &source3, &source1, &source3}
+          == sources_called);
   }
 }
 
