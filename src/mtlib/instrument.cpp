@@ -2,7 +2,8 @@
 
 #include "mtlib/sample.h"
 #include "mtlib/note.h"
-#include <SFML/Audio/Sound.hpp>
+#include "sndmix/mixer.h"
+#include "sndmix/sound.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 #include <cassert>
@@ -143,8 +144,17 @@ namespace mt {
     }
   }
 
-  void Instrument::play(const NoteDef& /*notedef*/)
+  void Instrument::play(const NoteDef& notedef, mt::snd::Mixer& mixer)
   {
+    const auto* sample = lookup_sample(notedef);
+    if (sample == nullptr)
+    {
+      spdlog::debug("[{}] No sample found for {}", name(), notedef);
+      return;
+    }
+
+    mixer.play(sample->create_sound());
+
     // const std::size_t idx = notedef.octave * notes + static_cast<std::size_t>(notedef.note);
     // assert(idx < sounds.size());
     // auto* sound = sounds[idx];

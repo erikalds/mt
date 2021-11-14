@@ -1,6 +1,7 @@
 #include "audiostream.h"
 
 #include "audiomixer.h"
+#include "channel.h"
 #include <memory>
 #include <portaudio.h>
 #include <fmt/format.h>
@@ -99,6 +100,20 @@ AudioStream::~AudioStream()
     spdlog::error("Error closing stream: {}", Pa_GetErrorText(err));
   }
   spdlog::debug("Audio stream closed.");
+}
+
+std::vector<std::unique_ptr<AudioChannel>> AudioStream::create_channels(std::size_t count)
+{
+  std::vector<std::unique_ptr<AudioChannel>> channels{};
+  channels.resize(count);
+  for (auto& c : channels)
+  {
+    auto channel = std::make_unique<Channel>();
+    mixer->add_source(*channel);
+    c = std::move(channel);
+  }
+
+  return channels;
 }
 
 } // namespace mt::snd

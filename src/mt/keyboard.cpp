@@ -40,7 +40,8 @@ void Keyboard::event_occurred(const sf::Event& e)
   }
   else
   {
-    current_instrument->play(*opt_notedef);
+    assert(mixer != nullptr);
+    current_instrument->play(*opt_notedef, *mixer);
   }
 }
 

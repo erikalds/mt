@@ -7,6 +7,7 @@
 namespace mt::snd {
 
 class AudioStream;
+class Mixer;
 
 class AudioSystem
 {
@@ -17,6 +18,8 @@ public:
   AudioSystem(AudioSystem&&) = delete;
   AudioSystem& operator=(AudioSystem&&) = delete;
   ~AudioSystem();
+
+  std::unique_ptr<Mixer> create_mixer();
 
 private:
   void list_devices() const;

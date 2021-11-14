@@ -2,11 +2,13 @@
 #define AUDIOSTREAM_H
 
 #include <memory>
+#include <vector>
 
 using PaStream = void;
 
 namespace mt::snd {
 
+class AudioChannel;
 class AudioMixer;
 
 class AudioStream
@@ -18,6 +20,8 @@ public:
   AudioStream(AudioStream&&) = delete;
   AudioStream& operator=(AudioStream&&) = delete;
   ~AudioStream();
+
+  std::vector<std::unique_ptr<AudioChannel>> create_channels(std::size_t count);
 
 private:
   PaStream* stream = nullptr;

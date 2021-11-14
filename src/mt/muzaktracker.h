@@ -15,6 +15,9 @@ namespace digg
 namespace mt {
   class Config;
   class Project;
+  namespace snd {
+    class Mixer;
+  }
 }
 
 class InstrumentEditor;
@@ -26,7 +29,7 @@ class PatternView;
 class MuzakTracker
 {
 public:
-  explicit MuzakTracker(mt::Config& cfg);
+  MuzakTracker(mt::Config& cfg, std::unique_ptr<mt::snd::Mixer> mixer_);
   MuzakTracker(const MuzakTracker&) = delete;
   MuzakTracker& operator=(const MuzakTracker&) = delete;
   MuzakTracker(MuzakTracker&&) = delete;
@@ -54,6 +57,7 @@ private:
   std::vector<digg::Action> file_actions;
   std::vector<digg::Action> view_actions;
   std::unique_ptr<digg::FileDialog> file_dialog;
+  std::unique_ptr<mt::snd::Mixer> mixer;
   mt::Config& config;
 };
 

@@ -7,10 +7,10 @@
 #include <memory>
 #include <string>
 
-namespace sf { class Sound; }
 namespace YAML { class Node; }
 
 namespace mt {
+  namespace snd { class Sound; }
 
   class AudioDataPresenter;
 
@@ -21,7 +21,7 @@ namespace mt {
     Sample(std::string name_, void* pcm_data, std::size_t data_size,
            float pitch_offset_);
 
-    //std::unique_ptr<sf::Sound> create_sound() const;
+    [[nodiscard]] snd::Sound create_sound() const;
 
     [[nodiscard]] std::string_view name() const { return sample_name; }
     void set_name(std::string_view n) { sample_name = n; }

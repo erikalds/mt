@@ -9,7 +9,10 @@
 namespace mt {
   class Instrument;
   struct NoteDef;
-}
+  namespace snd {
+    class Mixer;
+  } // namespace snd
+} // namespace mt
 
 class Keyboard : public digg::SubWindow,
                  public digg::EventListener,
@@ -23,6 +26,8 @@ public:
 
   [[nodiscard]] std::optional<mt::NoteDef> get_note_from_event(const sf::Event& e) const;
 
+  void connect_to(mt::snd::Mixer& m) { mixer = &m; }
+
   void set_current_instrument(mt::Instrument* instr);
   void selected_instrument_changed(int /*instr_idx*/, mt::Instrument* instr,
                                    mt::Sample* /*sample*/) override
@@ -30,6 +35,7 @@ public:
 
 private:
   mt::Instrument* current_instrument = nullptr;
+  mt::snd::Mixer* mixer = nullptr;
 };
 
 #endif /* KEYBOARD_H */

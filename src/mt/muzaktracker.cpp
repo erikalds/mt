@@ -8,6 +8,7 @@
 #include "mtlib/config.h"
 #include "mtlib/project.h"
 
+#include "sndmix/mixer.h"
 #include "digg/action.h"
 #include "digg/event_processor.h"
 #include "digg/file_dialog.h"
@@ -16,16 +17,19 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <spdlog/spdlog.h>
 
-MuzakTracker::MuzakTracker(mt::Config& cfg) :
+MuzakTracker::MuzakTracker(mt::Config& cfg, std::unique_ptr<mt::snd::Mixer> mixer_) :
   main_window{std::make_unique<digg::MainWindow>("Muzak Tracker")},
   keyboard{std::make_unique<Keyboard>()},
   instrument_list{std::make_unique<InstrumentList>()},
   instrument_editor{std::make_unique<InstrumentEditor>()},
   pattern_view{std::make_unique<PatternView>()},
   pattern_queue_editor{std::make_unique<PatternQueueEditor>(*pattern_view)},
+  mixer{std::move(mixer_)},
   config{cfg}
 {
   main_window->set_size(config.get_window_size());
+
+  keyboard->connect_to(*mixer);
 
   set_current_project(std::make_unique<mt::Project>());
   instrument_list->add_selection_listener(*keyboard);

@@ -1,8 +1,9 @@
 #include "sample.h"
 
 #include "mtlib/audio_data_presenter.h"
-#include "sndmix/sample_data_iterator.h"
 #include "mtlib/wav_file_format.h"
+#include "sndmix/sample_data_iterator.h"
+#include "sndmix/sound.h"
 #include "sndmix/soundbuffer.h"
 #include "base64/decode.h"
 #include "base64/encode.h"
@@ -41,6 +42,10 @@ namespace mt {
     load_sound_buffer(pcm_data, data_size);
   }
 
+  [[nodiscard]] snd::Sound Sample::create_sound() const
+  {
+    return snd::Sound{sound_buffer, 1.0};
+  }
   // std::unique_ptr<sf::Sound> Sample::create_sound() const
   // {
   //   auto s = std::make_unique<sf::Sound>();

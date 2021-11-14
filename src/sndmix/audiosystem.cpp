@@ -1,6 +1,8 @@
 #include "audiosystem.h"
 
 #include "audiostream.h"
+#include "audiochannel.h"
+#include "mixer.h"
 #include <portaudio.h>
 #include <spdlog/spdlog.h>
 
@@ -36,6 +38,12 @@ AudioSystem::~AudioSystem()
   {
     spdlog::debug("PortAudio terminated successfully");
   }
+}
+
+std::unique_ptr<Mixer> AudioSystem::create_mixer()
+{
+  const auto default_channel_cnt{8};
+  return std::make_unique<Mixer>(stream->create_channels(default_channel_cnt));
 }
 
 void AudioSystem::list_devices() const

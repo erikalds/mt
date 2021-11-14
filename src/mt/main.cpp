@@ -1,6 +1,7 @@
 #include "muzaktracker.h"
 #include "mtlib/config.h"
 #include "sndmix/audiosystem.h"
+#include "sndmix/mixer.h"
 #include "digg/sentry.h"
 
 #include <docopt/docopt.h>
@@ -46,8 +47,7 @@ int main(int argc, const char* argv[])
 
   mt::Config config{};
   mt::snd::AudioSystem audiosystem{config.get_audio_output_device_index()};
-
-  MuzakTracker mt{config};
+  MuzakTracker mt{config, audiosystem.create_mixer()};
   if (args["<mzt-file>"])
   {
     mt.load_project(args["<mzt-file>"].asString());

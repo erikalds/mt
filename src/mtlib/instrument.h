@@ -9,6 +9,9 @@
 namespace YAML { class Node; }
 
 namespace mt {
+  namespace snd {
+    class Mixer;
+  }  // namespace snd
 
   struct NoteDef;
   class Sample;
@@ -37,7 +40,7 @@ namespace mt {
 
     void set_sample_assignments(std::vector<std::pair<NoteDef, NoteDef>> ass);
 
-    void play(const NoteDef& notedef);
+    void play(const NoteDef& notedef, mt::snd::Mixer& mixer);
     void stop(const NoteDef& notedef);
     void stop();
 
