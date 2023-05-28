@@ -1,3 +1,8 @@
+#if defined(__GNUC__) && __GNUC__ == 13
+#  pragma GCC diagnostic ignored "-Warray-bounds"
+#  pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
 #include "audiostream.h"
 
 #include "audiomixer.h"
@@ -10,6 +15,7 @@
 
 
 #include <sstream>
+
 
 namespace mt::snd {
 namespace {

@@ -1,3 +1,8 @@
+#if defined(__GNUC__) && __GNUC__ == 13
+#  pragma GCC diagnostic ignored "-Warray-bounds"  // libfmt/gcc-13 issue
+#  pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif // defined(__GNUC__) && __GNUC__ == 13
+
 #include "mtlib/note.h"
 
 #include <catch2/catch_test_macros.hpp>
