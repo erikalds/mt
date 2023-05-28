@@ -5,9 +5,9 @@ add_executable(mtlib_tests
   wav_file_format_test.cpp)
 
 target_link_libraries(mtlib_tests PRIVATE
+  CONAN_PKG::catch2
   project_warnings project_options
   mtlib
-  catch_main
   CONAN_PKG::fmt CONAN_PKG::yaml-cpp)
 
 target_include_directories(mtlib_tests PRIVATE ${INTERNAL_INCLUDES})
@@ -17,7 +17,7 @@ catch_discover_tests(
   TEST_PREFIX
   "unittests.mtlib."
   REPORTER
-  xml
+  XML
   OUTPUT_DIR
   .
   OUTPUT_PREFIX

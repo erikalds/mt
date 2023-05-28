@@ -3,9 +3,9 @@ add_executable(base64_tests
   encode_test.cpp)
 
 target_link_libraries(base64_tests PRIVATE
+  CONAN_PKG::catch2
   project_warnings project_options
-  base64
-  catch_main)
+  base64)
 
 target_include_directories(base64_tests PRIVATE ${INTERNAL_INCLUDES})
 
@@ -14,7 +14,7 @@ catch_discover_tests(
   TEST_PREFIX
   "unittests.base64."
   REPORTER
-  xml
+  XML
   OUTPUT_DIR
   .
   OUTPUT_PREFIX

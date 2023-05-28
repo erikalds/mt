@@ -1,6 +1,6 @@
 #include "sndmix/sinknode.h"
 #include "sndmix/sourcenode.h"
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace mt::snd::unittest {
 

@@ -1,6 +1,7 @@
 #include "sndmix/interpolating_sample_data_iterator.h"
 #include "sndmix/sample_data_iterator.h"
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include <iostream>
 
@@ -47,7 +48,7 @@ TEST_CASE("interpolate_22050_to_44100", "[iterator]")
     for (; iter != end; ++iter)
     {
       REQUIRE(i < correct_output.size());
-      CHECK(Approx(correct_output.at(i++)) == *iter);
+      CHECK(Catch::Approx(correct_output.at(i++)) == *iter);
     }
     CHECK(iter == end);
     CHECK(i == correct_output.size());
@@ -79,9 +80,9 @@ TEST_CASE("interpolate_22050_to_44100", "[iterator]")
   }
   SECTION("bracket operator")
   {
-    CHECK(Approx(correct_output[4]) == iter[4]);
+    CHECK(Catch::Approx(correct_output[4]) == iter[4]);
     ++iter;
-    CHECK(Approx(correct_output[7]) == iter[6]);
+    CHECK(Catch::Approx(correct_output[7]) == iter[6]);
   }
   SECTION("comparable")
   {

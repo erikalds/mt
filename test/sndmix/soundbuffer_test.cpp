@@ -1,6 +1,7 @@
 #include "sndmix/soundbuffer.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 #include <fmt/format.h>
 #include <chrono>
 #include <cstdint>
@@ -69,14 +70,14 @@ namespace mt::snd::unittest {
     SoundBuffer sndbuf{create_samples(), 4, 2, 44100};
     REQUIRE(sndbuf.get_float_samples() != nullptr);
     std::span<const float> samples{sndbuf.get_float_samples(), 8};
-    CHECK(samples[0] == Approx(0.0F));
-    CHECK(samples[1] == Approx(0.0F));
-    CHECK(samples[2] == Approx(0.99997F));
-    CHECK(samples[3] == Approx(-1.0F));
-    CHECK(samples[4] == Approx(0.5F));
-    CHECK(samples[5] == Approx(-0.5F));
-    CHECK(samples[6] == Approx(-1.0F));
-    CHECK(samples[7] == Approx(0.99997F));
+    CHECK(samples[0] == Catch::Approx(0.0F));
+    CHECK(samples[1] == Catch::Approx(0.0F));
+    CHECK(samples[2] == Catch::Approx(0.99997F));
+    CHECK(samples[3] == Catch::Approx(-1.0F));
+    CHECK(samples[4] == Catch::Approx(0.5F));
+    CHECK(samples[5] == Catch::Approx(-0.5F));
+    CHECK(samples[6] == Catch::Approx(-1.0F));
+    CHECK(samples[7] == Catch::Approx(0.99997F));
   }
 
   TEST_CASE("copy_ctor", "[sndmix]")

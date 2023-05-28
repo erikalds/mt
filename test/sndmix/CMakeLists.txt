@@ -7,9 +7,9 @@ add_executable(sndmix_tests
   )
 
 target_link_libraries(sndmix_tests PRIVATE
+  CONAN_PKG::catch2
   project_warnings project_options
   sndmix
-  catch_main
   CONAN_PKG::fmt)
 
 target_include_directories(sndmix_tests PRIVATE ${INTERNAL_INCLUDES})
@@ -19,7 +19,7 @@ catch_discover_tests(
   TEST_PREFIX
   "unittests.sndmix."
   REPORTER
-  xml
+  XML
   OUTPUT_DIR
   .
   OUTPUT_PREFIX

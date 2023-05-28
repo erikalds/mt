@@ -3,9 +3,9 @@ add_executable(digg_tests
   event_processor_test.cpp)
 
 target_link_libraries(digg_tests PRIVATE
+  CONAN_PKG::catch2
   project_warnings project_options
   digg
-  catch_main
   CONAN_PKG::imgui-sfml)
 
 target_include_directories(digg_tests PRIVATE ${INTERNAL_INCLUDES})
@@ -15,7 +15,7 @@ catch_discover_tests(
   TEST_PREFIX
   "unittests.digg."
   REPORTER
-  xml
+  XML
   OUTPUT_DIR
   .
   OUTPUT_PREFIX

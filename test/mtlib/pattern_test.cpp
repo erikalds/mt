@@ -1,6 +1,6 @@
 #include "mtlib/pattern.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <yaml-cpp/yaml.h>
 
 TEST_CASE("Pattern_Track_containers", "[pattern]")

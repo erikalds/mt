@@ -1,6 +1,6 @@
 #include "sndmix/sample_data_iterator.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cstdint>
 
 TEST_CASE("sample_data_iterator.mono_sample", "[iterator]")
