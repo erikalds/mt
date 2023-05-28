@@ -4,6 +4,7 @@
 #include "mt/instrument_selection_listener.h"
 #include "digg/subwindow.h"
 #include "digg/event_listener.h"
+#include <cstdint>
 
 struct ImVec2;
 

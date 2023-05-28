@@ -2,6 +2,7 @@
 #include "sndmix/soundbuffer.h"
 #include <catch2/catch_test_macros.hpp>
 #include <cstdint>
+#include <functional>
 #include <initializer_list>
 
 namespace mt::snd::unittest {
