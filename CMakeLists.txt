@@ -62,12 +62,12 @@ set(CONAN_EXTRA_OPTIONS "")
 
 set(CONAN_EXTRA_REQUIRES
   ${CONAN_EXTRA_REQUIRES}
-  imgui-sfml/2.1@bincrafters/stable
+  imgui-sfml/2.5@bincrafters/stable
   yaml-cpp/0.7.0)
 
 set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
-  sfml:shared=False sfml:graphics=True #sfml:audio=True
-  sfml:window=True #libalsa:disable_python=True
+  sfml/*:shared=False sfml/*:graphics=True sfml/*:audio=False
+  sfml/*:window=True #libalsa:disable_python=True
   )
 
 include(cmake/Conan.cmake)
