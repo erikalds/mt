@@ -82,7 +82,7 @@ struct fmt::formatter<mt::NoteDef>
     const auto* end = ctx.end();
     if (it != nullptr && (it == end || *it != '}'))
     {
-      throw format_error{"invalid format<mt::NoteDef>"};
+      throw fmt::format_error{"invalid format<mt::NoteDef>"};
     }
 
     return it;
@@ -91,7 +91,7 @@ struct fmt::formatter<mt::NoteDef>
   template<typename FormatContext>
   auto format(const mt::NoteDef& nd, FormatContext& ctx)
   {
-    return format_to(ctx.out(), "{}", mt::to_string(nd));
+    return fmt::format_to(ctx.out(), "{}", mt::to_string(nd));
   }
 };
 
