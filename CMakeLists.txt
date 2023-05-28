@@ -63,7 +63,7 @@ set(CONAN_EXTRA_OPTIONS "")
 set(CONAN_EXTRA_REQUIRES
   ${CONAN_EXTRA_REQUIRES}
   imgui-sfml/2.1@bincrafters/stable
-  yaml-cpp/0.6.3)
+  yaml-cpp/0.7.0)
 
 set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
   sfml:shared=False sfml:graphics=True #sfml:audio=True

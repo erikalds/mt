@@ -57,7 +57,7 @@ namespace mt {
     void assign(std::optional<U>& dest, const YAML::Node& node,
                 std::string_view name)
     {
-      if (node[name.data()] != nullptr)
+      if (node[name.data()])
       {
         dest = node[name.data()].as<T>();
       }
@@ -67,7 +67,7 @@ namespace mt {
     void assign<std::string>(std::optional<NoteDef>& dest, const YAML::Node& node,
                              std::string_view name)
     {
-      if (node[name.data()] != nullptr)
+      if (node[name.data()])
       {
         dest = NoteDef::from_string(node[name.data()].as<std::string>());
       }
@@ -78,7 +78,7 @@ namespace mt {
   NoteEvent NoteEvent::load_from_yaml(const YAML::Node& node)
   {
     std::size_t modsize = 1;
-    if (node["mod"] != nullptr)
+    if (node["mod"])
     {
       modsize = node["mod"].size();
     }
@@ -86,12 +86,12 @@ namespace mt {
     NoteEvent ne{std::max(static_cast<std::size_t>(1), modsize)};
     assign<std::string>(ne.note, node, "note");
     assign<int>(ne.instr, node, "instr");
-    if (node["stop"] != nullptr)
+    if (node["stop"])
     {
       ne.stop = node["stop"].as<bool>();
     }
     assign<int>(ne.volume, node, "volume");
-    if (node["mod"] != nullptr)
+    if (node["mod"])
     {
       for (std::size_t i{0}; i < node["mod"].size(); ++i)
       {
@@ -163,11 +163,11 @@ namespace mt {
   Track Track::load_from_yaml(const YAML::Node& node)
   {
     Track track{node["length"].as<std::size_t>()};
-    if (node["events"] != nullptr)
+    if (node["events"])
     {
       for (std::size_t i = 0; i < track.size(); ++i)
       {
-        if (node["events"][i] != nullptr)
+        if (node["events"][i])
         {
           track[i] = NoteEvent::load_from_yaml(node["events"][i]);
         }
