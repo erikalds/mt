@@ -45,6 +45,11 @@ jobs:
         source ~/.profile
         conan config set general.revisions_enabled=True
 
+    - name: Install OS pre-requisites
+      shell: bash
+      run: |
+        sudo apt-get install -y libudev-dev libjack-dev
+
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
