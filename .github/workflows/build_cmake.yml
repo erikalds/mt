@@ -41,7 +41,7 @@ jobs:
       shell: bash
       run: |
         python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install conan
+        python3 -m pip install conan\<2.0.0
         source ~/.profile
         conan config set general.revisions_enabled=True
 
