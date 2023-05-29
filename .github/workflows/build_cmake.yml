@@ -50,6 +50,16 @@ jobs:
       run: |
         sudo apt-get install -y libudev-dev libjack-dev libgl-dev libgl1-mesa-dev xorg-dev
 
+    - name: Build portaudio
+      shell: bash
+      working-directory: ${{runner.workspace}}/ext/portaudio
+      run: |
+        mkdir out
+        cd out
+        CC=gcc-12 CXX=g++-12 cmake -DCMAKE_INSTALL_PREFIX=../../build -DCMAKE_BUILD_TYPE=Release -GNinja ..
+        ninja
+        ninja install
+
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
