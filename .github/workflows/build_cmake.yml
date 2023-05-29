@@ -55,7 +55,7 @@ jobs:
 
     - name: Build portaudio
       shell: bash
-      working-directory: ${{runner.workspace}}/ext/portaudio
+      working-directory: ${{runner.workspace}}/mt/ext/portaudio
       run: |
         mkdir out
         cd out
