@@ -21,12 +21,12 @@ jobs:
 
     steps:
     - name: Checkout repository and submodules
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cache-conan-modules
       with:
@@ -91,7 +91,7 @@ jobs:
       run: ctest -C $BUILD_TYPE
 
     - name: Archive test result reports
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: always() # make sure the reports are uploaded even if (especially if) the tests fail
       with:
         name: test
