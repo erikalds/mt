@@ -3,6 +3,7 @@
 #include "sourcenode.h"
 
 #include <fmt/format.h>
+#include <algorithm>
 #include <stdexcept>
 
 namespace mt::snd {

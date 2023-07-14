@@ -1,8 +1,8 @@
 #include "mtlib/wav_file_format.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <array>
 #include <cstdint>
-
 #include <iostream>
 
 

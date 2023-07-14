@@ -3,6 +3,7 @@
 #include "sndmix/sample_data_iterator.h"
 #include <fmt/format.h>
 #include <imgui.h>
+#include <algorithm>
 #include <cstdint>
 
 SampleView::SampleView() :
