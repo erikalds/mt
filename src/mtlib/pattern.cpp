@@ -44,11 +44,12 @@ namespace mt {
   [[nodiscard]] std::string NoteEvent::represent() const
   {
     std::string mods{};
+    const std::string spc(" ");
     for (const auto& m : mod)
     {
-      mods += " " + to_str(m);
+      mods += spc + to_str(m);
     }
-    return to_str(note, stop) + " " + to_str(instr) + " " + to_str(volume) + mods;
+    return to_str(note, stop) + spc + to_str(instr) + spc + to_str(volume) + mods;
   }
 
   namespace {
