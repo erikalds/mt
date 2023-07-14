@@ -55,11 +55,11 @@ jobs:
 
     - name: Build portaudio
       shell: bash
-      working-directory: ${{runner.workspace}}/mt/ext/portaudio
+      working-directory: ${{runner.workspace}}/build
       run: |
-        mkdir out
-        cd out
-        cmake -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12 -DCMAKE_INSTALL_PREFIX=../../build -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+        mkdir -p ext/portaudio
+        cd ext/portaudio
+        cmake -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12 -DCMAKE_INSTALL_PREFIX=../../ext -DCMAKE_BUILD_TYPE=$BUILD_TYPE ${{runner.workspace}}/mt/ext/portaudio
         cmake --build . --config $BUILD_TYPE
         cmake --install . --config $BUILD_TYPE
 
