@@ -27,5 +27,5 @@ target_include_directories(sndmix PRIVATE ${INTERNAL_INCLUDES})
 
 target_link_libraries(sndmix PRIVATE
   project_warnings project_options
-  portaudio
+  PortAudio::PortAudio
   CONAN_PKG::fmt CONAN_PKG::spdlog)

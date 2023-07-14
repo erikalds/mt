@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Set the project name to your project name, my project isn't very descriptive
-project(myproject CXX)
+project(myproject CXX C)
 include(cmake/StandardProjectSettings.cmake)
 include(cmake/PreventInSourceBuilds.cmake)
 
@@ -73,7 +73,9 @@ set(CONAN_EXTRA_OPTIONS ${CONAN_EXTRA_OPTIONS}
 include(cmake/Conan.cmake)
 run_conan()
 
-include(ext/build/lib/cmake/portaudio/portaudioConfig.cmake)
+
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_BINARY_DIR}/ext/lib/cmake/portaudio/modules")
+include(${CMAKE_BINARY_DIR}/ext/lib/cmake/portaudio/PortAudioConfig.cmake)
 
 set(INTERNAL_INCLUDES "${CMAKE_SOURCE_DIR}/src")
 
